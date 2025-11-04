@@ -28,7 +28,34 @@
             text-align: center;
             color: #2c3e50;
             font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .rules {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
             margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .rules h2 {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .rules ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .rules li {
+            margin-bottom: 6px;
         }
 
         /* BINGOテーブルのスタイル */
@@ -149,6 +176,16 @@
     <div class="container">
         <h1>忘年会 クロスBINGO</h1>
         
+        <div class="rules">
+            <h2>🎮 ルール説明</h2>
+            <ul>
+                <li>各マスに表示されたお題を達成した人を探しましょう</li>
+                <li>達成した人の名前を入力して「OK」ボタンを押すと、マスがオレンジ色に変わります</li>
+                <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」です</li>
+                <li>中央のマスは「アダストリアブランドのアイテムを身に着けている」で固定です</li>
+            </ul>
+        </div>
+        
         <table class="bingo-card">
             <!-- JavaScriptで <tbody> の中身が生成されます -->
             <tbody id="bingo-body">
@@ -201,14 +238,16 @@
 
             // 3. BINGOカードをHTMLとして生成する
             function createBingoCard() {
-                const shuffledTasks = shuffle([...tasks]); // 元の配列を壊さないようにコピー
                 const tbody = document.getElementById('bingo-body');
                 tbody.innerHTML = ''; // 中身をリセット
                 
                 // 中央マス（2行目、2列目）に固定するお題
                 const centerTask = "アダストリアブランドの<br>アイテムを身に着けている";
-                // 中央マス用のお題をシャッフル済みリストから除外
-                const filteredTasks = shuffledTasks.filter(task => task !== centerTask);
+                
+                // 中央マス用のお題を除外したリストを作成
+                const tasksWithoutCenter = tasks.filter(task => task !== centerTask);
+                // 8つのお題をシャッフル
+                const shuffledTasks = shuffle([...tasksWithoutCenter]);
                 
                 let taskIndex = 0;
                 for (let i = 0; i < 3; i++) { // 3行
@@ -216,14 +255,22 @@
                     for (let j = 0; j < 3; j++) { // 3列
                         const td = document.createElement('td');
                         // 中央マス（i=1, j=1）の場合は固定のお題を使用
-                        const taskText = (i === 1 && j === 1) ? centerTask : filteredTasks[taskIndex++];
+                        let taskText;
+                        if (i === 1 && j === 1) {
+                            taskText = centerTask;
+                        } else {
+                            taskText = shuffledTasks[taskIndex++];
+                        }
+                        
+                        // aria-label用に<br>タグを削除したテキストを作成
+                        const taskTextForAria = taskText.replace(/<br>/g, ' ');
                         
                         // マスの中身をHTMLで構築
                         td.innerHTML = `
                             <div class="cell-content">
                                 <div class="task">${taskText}</div>
                                 <div class="input-area">
-                                    <input type="text" placeholder="名前" class="name-input" aria-label="${taskText} の名前">
+                                    <input type="text" placeholder="名前" class="name-input" aria-label="${taskTextForAria} の名前">
                                     <button class="submit-btn">OK</button>
                                 </div>
                                 <div class="achieved-name"></div>
