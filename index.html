@@ -182,6 +182,7 @@
                 "サウナが好き",
                 "勤続20年以上",
                 "釣りが好き",
+                "アダストリアブランドの<br>アイテムを身に着けている",
                 "御社（ホスト企業）と<br>一番付き合いが長い",
                 "出身地が<br>九州",
                 "最近<br>孫が生まれた",
@@ -204,12 +205,18 @@
                 const tbody = document.getElementById('bingo-body');
                 tbody.innerHTML = ''; // 中身をリセット
                 
+                // 中央マス（2行目、2列目）に固定するお題
+                const centerTask = "アダストリアブランドの<br>アイテムを身に着けている";
+                // 中央マス用のお題をシャッフル済みリストから除外
+                const filteredTasks = shuffledTasks.filter(task => task !== centerTask);
+                
                 let taskIndex = 0;
                 for (let i = 0; i < 3; i++) { // 3行
                     const tr = document.createElement('tr');
                     for (let j = 0; j < 3; j++) { // 3列
                         const td = document.createElement('td');
-                        const taskText = shuffledTasks[taskIndex++];
+                        // 中央マス（i=1, j=1）の場合は固定のお題を使用
+                        const taskText = (i === 1 && j === 1) ? centerTask : filteredTasks[taskIndex++];
                         
                         // マスの中身をHTMLで構築
                         td.innerHTML = `
