@@ -258,10 +258,40 @@
                     throw new Error('CSVファイルの読み込みに失敗しました');
                 }
                 const csvText = await response.text();
-                // CSVを改行で分割し、空行を除外
-                tasks = csvText.split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line.length > 0);
+                // CSVを空行で分割して各お題を取得（空行でお題を区切る）
+                const lines = csvText.split('\n');
+                const rawTasks = [];
+                let currentTask = [];
+                
+                for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (trimmedLine === '') {
+                        // 空行が見つかったら、現在のお題を保存
+                        if (currentTask.length > 0) {
+                            rawTasks.push(currentTask.join('\n'));
+                            currentTask = [];
+                        }
+                    } else {
+                        // 空行でない場合は現在のお題に追加
+                        currentTask.push(trimmedLine);
+                    }
+                }
+                // 最後のお題を追加
+                if (currentTask.length > 0) {
+                    rawTasks.push(currentTask.join('\n'));
+                }
+                
+                // 各お題の改行を<br>タグに変換
+                tasks = rawTasks
+                    .map(task => task.split('\n').join('<br>'))
+                    .filter(task => task.length > 0);
+                
+                // 空行で分割できない場合（1行1お題の場合）のフォールバック
+                if (tasks.length === 0) {
+                    tasks = csvText.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0);
+                }
                 
                 // デフォルトのお題（CSVが読み込めない場合のフォールバック）
                 if (tasks.length === 0) {
