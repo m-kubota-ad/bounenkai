@@ -248,21 +248,50 @@
 
     <script>
         // DOM（HTML）の読み込みが完了したら実行
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             
-            // 1. BINGOのお題リスト
-            const tasks = [
-                "ゴルフが趣味",
-                "サウナが好き",
-                "勤続20年以上",
-                "釣りが好き",
-                "アダストリアブランドの<br>アイテムを身に着けている",
-                "御社（ホスト企業）と<br>一番付き合いが長い",
-                "出身地が<br>九州",
-                "最近<br>孫が生まれた",
-                "ラーメンが<br>週3以上で好き",
-                "愛妻家を<br>自認している"
-            ];
+            // 1. CSVファイルからお題リストを読み込む
+            let tasks = [];
+            try {
+                const response = await fetch('tasks.csv');
+                if (!response.ok) {
+                    throw new Error('CSVファイルの読み込みに失敗しました');
+                }
+                const csvText = await response.text();
+                // CSVを改行で分割し、空行を除外
+                tasks = csvText.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
+                
+                // デフォルトのお題（CSVが読み込めない場合のフォールバック）
+                if (tasks.length === 0) {
+                    tasks = [
+                        "ゴルフが趣味",
+                        "サウナが好き",
+                        "勤続20年以上",
+                        "釣りが好き",
+                        "御社（ホスト企業）と<br>一番付き合いが長い",
+                        "出身地が<br>九州",
+                        "最近<br>孫が生まれた",
+                        "ラーメンが<br>週3以上で好き",
+                        "愛妻家を<br>自認している"
+                    ];
+                }
+            } catch (error) {
+                console.error('CSV読み込みエラー:', error);
+                // エラー時はデフォルトのお題を使用
+                tasks = [
+                    "ゴルフが趣味",
+                    "サウナが好き",
+                    "勤続20年以上",
+                    "釣りが好き",
+                    "御社（ホスト企業）と<br>一番付き合いが長い",
+                    "出身地が<br>九州",
+                    "最近<br>孫が生まれた",
+                    "ラーメンが<br>週3以上で好き",
+                    "愛妻家を<br>自認している"
+                ];
+            }
 
             // 2. お題をシャッフルする（Fisher-Yatesアルゴリズム）
             function shuffle(array) {
