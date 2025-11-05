@@ -120,7 +120,7 @@
 
         /* お題のテキスト */
         .task {
-            font-size: 0.85rem; /* さらに小さくしてスペース確保 */
+            font-size: 1.1rem; /* スマホ向けに大きく */
             font-weight: bold;
             color: #333;
             line-height: 1.3;
@@ -138,65 +138,135 @@
             text-decoration: line-through;
         }
 
-        /* 入力フォームエリア */
+        /* 入力エリア（非表示 - モーダルで入力） */
         .input-area {
-            width: 95%;
-            margin-top: auto; /* 下部に配置 */
-            padding-top: 4px;
-            flex-shrink: 0; /* 縮小しない */
+            display: none;
         }
 
-        .name-input {
+        /* マスクリック時にポインターを表示 */
+        .bingo-card td:not(.achieved) {
+            cursor: pointer;
+        }
+
+        /* モーダルダイアログ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            font-size: 0.8rem; /* さらに小さく */
-            padding: 5px; /* 少し小さく */
-            margin-bottom: 3px;
-            box-sizing: border-box; /* paddingを含めて幅計算 */
-            border: 2px solid #ccc;
-            border-radius: 6px;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.3s;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #2c3e50;
             text-align: center;
         }
 
-        .name-input:focus {
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            font-size: 1.1rem; /* スマホ向けに大きく */
+            padding: 12px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .modal-input:focus {
             outline: none;
             border-color: #3498db;
         }
-        
-        /* OKボタン */
-        .submit-btn {
-            width: 100%;
-            font-size: 0.85rem; /* さらに小さく */
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            font-size: 1.1rem;
             font-weight: bold;
-            padding: 6px; /* 少し小さく */
-            margin-top: 3px;
+            padding: 12px;
             border: none;
-            border-radius: 6px;
-            background-color: #3498db; /* 青色 */
-            color: white;
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s;
         }
-        .submit-btn:hover {
-            background-color: #2980b9;
-        }
-        .submit-btn:active {
-            background-color: #21618c;
+
+        .modal-btn-primary {
+            background-color: #3498db;
+            color: white;
         }
 
-        /* 達成後：入力エリアを非表示 */
-        .achieved .input-area {
-            display: none;
+        .modal-btn-primary:active {
+            background-color: #2980b9;
+        }
+
+        .modal-btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .modal-btn-secondary:active {
+            background-color: #7f8c8d;
         }
         
         /* 達成後：入力された名前を表示 */
         .achieved-name {
             display: none; /* 通常は非表示 */
-            margin-top: 6px;
-            font-size: 0.9rem; /* 小さく */
+            margin-top: 8px;
+            font-size: 1rem; /* スマホ向けに大きく */
             font-weight: bold;
             color: #ffffff;
             word-break: break-all; /* 名前が長くても改行 */
-            line-height: 1.3;
+            line-height: 1.4;
         }
         
         .achieved .achieved-name {
@@ -214,7 +284,7 @@
             <h2>🎮 ルール説明</h2>
             <ul>
                 <li>各マスに表示されたお題を達成した人を探しましょう</li>
-                <li>達成した人の会社名と名前を入力して「OK」ボタンを押すと、マスがオレンジ色に変わります</li>
+                <li>マスをタップして、達成した人の「会社名＋名前」を入力すると、マスがオレンジ色に変わります</li>
                 <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」です</li>
                 <li>中央のマスは「アダストリアブランドのアイテムを身に着けている」で固定です</li>
             </ul>
@@ -245,6 +315,22 @@
                 -->
             </tbody>
         </table>
+    </div>
+
+    <!-- モーダルダイアログ -->
+    <div id="inputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTask"></h3>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="modalInput" class="modal-input" placeholder="会社名＋名前" autofocus>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -408,53 +494,91 @@
                         td.innerHTML = `
                             <div class="cell-content">
                                 <div class="task">${taskText}</div>
-                                <div class="input-area">
-                                    <input type="text" placeholder="会社名" class="name-input company-input" aria-label="${taskTextForAria} の会社名">
-                                    <input type="text" placeholder="名前" class="name-input name-input-field" aria-label="${taskTextForAria} の名前">
-                                    <button class="submit-btn">OK</button>
-                                </div>
                                 <div class="achieved-name"></div>
                             </div>
                         `;
+                        // データ属性にお題を保存（モーダル用）
+                        td.setAttribute('data-task', taskTextForAria);
+                        td.setAttribute('data-task-html', taskText);
                         tr.appendChild(td);
                     }
                     tbody.appendChild(tr);
                 }
             }
 
-            // 4. 「OK」ボタンにイベントリスナーを設定する
+            // 現在編集中のマスを保存
+            let currentCell = null;
+
+            // モーダルを開く
+            function openModal(cell) {
+                // 既に達成済みの場合は開かない
+                if (cell.classList.contains('achieved')) {
+                    return;
+                }
+                
+                currentCell = cell;
+                const taskText = cell.getAttribute('data-task');
+                const modal = document.getElementById('inputModal');
+                const modalTask = document.getElementById('modalTask');
+                const modalInput = document.getElementById('modalInput');
+                
+                modalTask.textContent = taskText;
+                modalInput.value = '';
+                modal.classList.add('active');
+                // フォーカスを入力欄に
+                setTimeout(() => modalInput.focus(), 100);
+            }
+
+            // モーダルを閉じる（グローバルスコープに公開）
+            window.closeModal = function() {
+                const modal = document.getElementById('inputModal');
+                modal.classList.remove('active');
+                currentCell = null;
+            };
+
+            // モーダルから送信（グローバルスコープに公開）
+            window.submitModal = function() {
+                if (!currentCell) return;
+                
+                const modalInput = document.getElementById('modalInput');
+                const inputValue = modalInput.value.trim();
+                
+                if (inputValue === '') {
+                    alert('会社名＋名前を入力してください。');
+                    return;
+                }
+                
+                const nameDisplay = currentCell.querySelector('.achieved-name');
+                nameDisplay.textContent = inputValue;
+                currentCell.classList.add('achieved');
+                closeModal();
+            };
+
+            // 4. マスクリック時にモーダルを開く
             function setupEventListeners() {
                 const bingoBody = document.getElementById('bingo-body');
                 
                 // イベント委任（tbody全体でクリックを監視）
                 bingoBody.addEventListener('click', function(e) {
-                    // クリックされたのが .submit-btn かどうかを判定
-                    if (e.target && e.target.classList.contains('submit-btn')) {
-                        
-                        // 関連する要素を取得
-                        const cell = e.target.closest('td'); // 親のtd
-                        const companyInput = cell.querySelector('.company-input');
-                        const nameInput = cell.querySelector('.name-input-field');
-                        const nameDisplay = cell.querySelector('.achieved-name');
-                        
-                        const company = companyInput.value.trim(); // 入力された会社名（空白を除去）
-                        const name = nameInput.value.trim(); // 入力された名前（空白を除去）
-                        
-                        // 会社名と名前が両方入力されている場合のみ処理
-                        if (company !== '' && name !== '') {
-                            // 会社名と名前を表示（改行で区切る）
-                            nameDisplay.innerHTML = `${company}<br>${name}`;
-                            cell.classList.add('achieved'); // 達成スタイル（オレンジ色）を適用
-                        } else {
-                            // 入力が不完全な場合にアラート
-                            if (company === '' && name === '') {
-                                alert('会社名と名前を入力してください。');
-                            } else if (company === '') {
-                                alert('会社名を入力してください。');
-                            } else {
-                                alert('名前を入力してください。');
-                            }
-                        }
+                    // クリックされたのがtdかその子要素か判定
+                    const cell = e.target.closest('td');
+                    if (cell && !cell.classList.contains('achieved')) {
+                        openModal(cell);
+                    }
+                });
+                
+                // モーダルの背景をクリックしたら閉じる
+                const modal = document.getElementById('inputModal');
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+                
+                // Enterキーで送信
+                document.getElementById('modalInput').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        submitModal();
                     }
                 });
             }
