@@ -146,7 +146,7 @@
         }
 
         /* マスクリック時にポインターを表示 */
-        .bingo-card td:not(.achieved) {
+        .bingo-card td {
             cursor: pointer;
         }
 
@@ -546,11 +546,6 @@
 
             // モーダルを開く
             function openModal(cell) {
-                // 既に達成済みの場合は開かない
-                if (cell.classList.contains('achieved')) {
-                    return;
-                }
-                
                 currentCell = cell;
                 const taskText = cell.getAttribute('data-task');
                 const modal = document.getElementById('inputModal');
@@ -559,8 +554,32 @@
                 const modalNameInput = document.getElementById('modalNameInput');
                 
                 modalTask.textContent = taskText;
-                modalCompanyInput.value = '';
-                modalNameInput.value = '';
+                
+                // 既に入力済みの場合は既存の値を表示
+                const nameDisplay = cell.querySelector('.achieved-name');
+                if (cell.classList.contains('achieved') && nameDisplay.innerHTML) {
+                    // innerHTMLから<br>タグをスペースに変換して分割
+                    const currentText = nameDisplay.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+                    const parts = currentText.split('\n');
+                    if (parts.length >= 2) {
+                        modalCompanyInput.value = parts[0].trim();
+                        modalNameInput.value = parts[1].trim();
+                    } else {
+                        // 改行がない場合は最初のスペースで分割を試みる
+                        const spaceIndex = currentText.indexOf(' ');
+                        if (spaceIndex > 0) {
+                            modalCompanyInput.value = currentText.substring(0, spaceIndex).trim();
+                            modalNameInput.value = currentText.substring(spaceIndex + 1).trim();
+                        } else {
+                            modalCompanyInput.value = '';
+                            modalNameInput.value = currentText.trim();
+                        }
+                    }
+                } else {
+                    modalCompanyInput.value = '';
+                    modalNameInput.value = '';
+                }
+                
                 modal.classList.add('active');
                 // フォーカスを会社名入力欄に
                 setTimeout(() => modalCompanyInput.focus(), 100);
@@ -601,7 +620,7 @@
                 bingoBody.addEventListener('click', function(e) {
                     // クリックされたのがtdかその子要素か判定
                     const cell = e.target.closest('td');
-                    if (cell && !cell.classList.contains('achieved')) {
+                    if (cell) {
                         openModal(cell);
                     }
                 });
