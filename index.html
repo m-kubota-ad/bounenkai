@@ -120,7 +120,7 @@
 
         /* お題のテキスト */
         .task {
-            font-size: 1rem; /* 少し小さくしてスペース確保 */
+            font-size: 0.85rem; /* さらに小さくしてスペース確保 */
             font-weight: bold;
             color: #333;
             line-height: 1.3;
@@ -147,9 +147,9 @@
 
         .name-input {
             width: 100%;
-            font-size: 0.9rem; /* 少し小さくしてスペース確保 */
-            padding: 6px; /* 少し小さく */
-            margin-bottom: 4px;
+            font-size: 0.8rem; /* さらに小さく */
+            padding: 5px; /* 少し小さく */
+            margin-bottom: 3px;
             box-sizing: border-box; /* paddingを含めて幅計算 */
             border: 2px solid #ccc;
             border-radius: 6px;
@@ -164,10 +164,10 @@
         /* OKボタン */
         .submit-btn {
             width: 100%;
-            font-size: 0.95rem; /* 少し小さく */
+            font-size: 0.85rem; /* さらに小さく */
             font-weight: bold;
-            padding: 8px; /* 少し小さく */
-            margin-top: 4px;
+            padding: 6px; /* 少し小さく */
+            margin-top: 3px;
             border: none;
             border-radius: 6px;
             background-color: #3498db; /* 青色 */
@@ -190,12 +190,12 @@
         /* 達成後：入力された名前を表示 */
         .achieved-name {
             display: none; /* 通常は非表示 */
-            margin-top: 8px;
-            font-size: 1.1rem; /* スマホ向けに大きく */
+            margin-top: 6px;
+            font-size: 0.9rem; /* 小さく */
             font-weight: bold;
             color: #ffffff;
             word-break: break-all; /* 名前が長くても改行 */
-            line-height: 1.4;
+            line-height: 1.3;
         }
         
         .achieved .achieved-name {
@@ -304,35 +304,10 @@
                     throw new Error('CSVファイルの読み込みに失敗しました');
                 }
                 const csvText = await response.text();
-                // CSVを空行で分割して各お題を取得（空行でお題を区切る）
-                const lines = csvText.split('\n');
-                const rawTasks = [];
-                let currentTask = [];
-                
-                for (const line of lines) {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine === '') {
-                        // 空行が見つかったら、現在のお題を保存
-                        if (currentTask.length > 0) {
-                            rawTasks.push(currentTask.join(''));
-                            currentTask = [];
-                        }
-                    } else {
-                        // 空行でない場合は現在のお題に追加（改行は結合）
-                        currentTask.push(trimmedLine);
-                    }
-                }
-                // 最後のお題を追加
-                if (currentTask.length > 0) {
-                    rawTasks.push(currentTask.join(''));
-                }
-                
-                // 空行で分割できない場合（1行1お題の場合）のフォールバック
-                if (rawTasks.length === 0) {
-                    rawTasks.push(...csvText.split('\n')
-                        .map(line => line.trim())
-                        .filter(line => line.length > 0));
-                }
+                // CSVを1行1お題として読み込む（空行を無視）
+                const rawTasks = csvText.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
                 
                 // お題を自動改行処理（HTML側で改行位置を決定）
                 tasks = rawTasks
@@ -385,11 +360,15 @@
                 const tbody = document.getElementById('bingo-body');
                 tbody.innerHTML = ''; // 中身をリセット
                 
-                // 中央マス（2行目、2列目）に固定するお題
-                const centerTask = "アダストリアブランドの<br>アイテムを身に着けている";
+                // 中央マス（2行目、2列目）に固定するお題（自動改行処理を適用）
+                const centerTaskRaw = "アダストリアブランドのアイテムを身に着けている";
+                const centerTask = autoWrapText(centerTaskRaw);
                 
-                // 中央マス用のお題を除外したリストを作成
-                const tasksWithoutCenter = tasks.filter(task => task !== centerTask);
+                // 中央マス用のお題を除外したリストを作成（元のテキストで比較）
+                const tasksWithoutCenter = tasks.filter(task => {
+                    const cleanTask = task.replace(/<br>/gi, '');
+                    return cleanTask !== centerTaskRaw;
+                });
                 // 8つのお題をシャッフル
                 const shuffledTasks = shuffle([...tasksWithoutCenter]);
                 
