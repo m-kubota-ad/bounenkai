@@ -363,12 +363,20 @@
                 // 中央マス（2行目、2列目）に固定するお題（自動改行処理を適用）
                 const centerTaskRaw = "アダストリアブランドのアイテムを身に着けている";
                 const centerTask = autoWrapText(centerTaskRaw);
+                console.log('中央マスお題（元）:', centerTaskRaw);
+                console.log('中央マスお題（処理後）:', centerTask);
                 
                 // 中央マス用のお題を除外したリストを作成（元のテキストで比較）
                 const tasksWithoutCenter = tasks.filter(task => {
-                    const cleanTask = task.replace(/<br>/gi, '');
+                    const cleanTask = task.replace(/<br>/gi, '').trim();
                     return cleanTask !== centerTaskRaw;
                 });
+                
+                // 8マス分のお題が必要（中央マス以外）
+                if (tasksWithoutCenter.length < 8) {
+                    console.warn('お題が8個未満です。8個以上用意してください。');
+                }
+                
                 // 8つのお題をシャッフル
                 const shuffledTasks = shuffle([...tasksWithoutCenter]);
                 
@@ -380,9 +388,16 @@
                         // 中央マス（i=1, j=1）の場合は固定のお題を使用
                         let taskText;
                         if (i === 1 && j === 1) {
+                            // 中央マスは必ず固定のお題を使用
                             taskText = centerTask;
                         } else {
-                            taskText = shuffledTasks[taskIndex++];
+                            // それ以外のマス
+                            if (taskIndex < shuffledTasks.length) {
+                                taskText = shuffledTasks[taskIndex++];
+                            } else {
+                                // お題が足りない場合のフォールバック
+                                taskText = 'お題が足りません';
+                            }
                         }
                         
                         // aria-label用に<br>タグを削除したテキストを作成
