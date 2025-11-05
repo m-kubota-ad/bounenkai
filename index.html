@@ -250,6 +250,52 @@
         // DOM（HTML）の読み込みが完了したら実行
         document.addEventListener('DOMContentLoaded', async function() {
             
+            // テキストを自動改行する関数（長いテキストを適切な位置で改行）
+            function autoWrapText(text) {
+                if (!text || text.length === 0) return '';
+                
+                // 改行タグを削除してテキストのみにする
+                const cleanText = text.replace(/<br>/gi, '').trim();
+                
+                // 短いテキスト（10文字以下）はそのまま返す
+                if (cleanText.length <= 10) {
+                    return cleanText;
+                }
+                
+                // 長いテキストの場合、適切な位置で改行を挿入
+                // 括弧がある場合は括弧の後で改行
+                const parenMatch = cleanText.match(/（[^）]+）/);
+                if (parenMatch && cleanText.length > 12) {
+                    const parenIndex = cleanText.indexOf('）');
+                    if (parenIndex > 0 && parenIndex < cleanText.length - 3) {
+                        return cleanText.substring(0, parenIndex + 1) + '<br>' + cleanText.substring(parenIndex + 1);
+                    }
+                }
+                
+                // 句読点がある場合は句読点の後で改行
+                const punctuationMatch = cleanText.match(/[、。，．]/);
+                if (punctuationMatch && cleanText.length > 12) {
+                    const punctIndex = cleanText.indexOf(punctuationMatch[0]);
+                    if (punctIndex > 0 && punctIndex < cleanText.length - 3) {
+                        return cleanText.substring(0, punctIndex + 1) + '<br>' + cleanText.substring(punctIndex + 1);
+                    }
+                }
+                
+                // 区切り文字がない場合は文字数で判断（12文字程度で改行）
+                if (cleanText.length > 12) {
+                    // 中点を探す
+                    const midPoint = Math.floor(cleanText.length / 2);
+                    const midDotIndex = cleanText.indexOf('・', midPoint - 3);
+                    if (midDotIndex > 0) {
+                        return cleanText.substring(0, midDotIndex + 1) + '<br>' + cleanText.substring(midDotIndex + 1);
+                    }
+                    // 中点がない場合は中央付近で改行
+                    return cleanText.substring(0, midPoint) + '<br>' + cleanText.substring(midPoint);
+                }
+                
+                return cleanText;
+            }
+            
             // 1. CSVファイルからお題リストを読み込む
             let tasks = [];
             try {
@@ -268,59 +314,61 @@
                     if (trimmedLine === '') {
                         // 空行が見つかったら、現在のお題を保存
                         if (currentTask.length > 0) {
-                            rawTasks.push(currentTask.join('\n'));
+                            rawTasks.push(currentTask.join(''));
                             currentTask = [];
                         }
                     } else {
-                        // 空行でない場合は現在のお題に追加
+                        // 空行でない場合は現在のお題に追加（改行は結合）
                         currentTask.push(trimmedLine);
                     }
                 }
                 // 最後のお題を追加
                 if (currentTask.length > 0) {
-                    rawTasks.push(currentTask.join('\n'));
+                    rawTasks.push(currentTask.join(''));
                 }
-                
-                // 各お題の改行を<br>タグに変換
-                tasks = rawTasks
-                    .map(task => task.split('\n').join('<br>'))
-                    .filter(task => task.length > 0);
                 
                 // 空行で分割できない場合（1行1お題の場合）のフォールバック
-                if (tasks.length === 0) {
-                    tasks = csvText.split('\n')
+                if (rawTasks.length === 0) {
+                    rawTasks.push(...csvText.split('\n')
                         .map(line => line.trim())
-                        .filter(line => line.length > 0);
+                        .filter(line => line.length > 0));
                 }
+                
+                // お題を自動改行処理（HTML側で改行位置を決定）
+                tasks = rawTasks
+                    .map(task => autoWrapText(task))
+                    .filter(task => task.length > 0);
                 
                 // デフォルトのお題（CSVが読み込めない場合のフォールバック）
                 if (tasks.length === 0) {
-                    tasks = [
+                    const defaultTasks = [
                         "ゴルフが趣味",
                         "サウナが好き",
                         "勤続20年以上",
                         "釣りが好き",
-                        "御社（ホスト企業）と<br>一番付き合いが長い",
-                        "出身地が<br>九州",
-                        "最近<br>孫が生まれた",
-                        "ラーメンが<br>週3以上で好き",
-                        "愛妻家を<br>自認している"
+                        "御社（ホスト企業）と一番付き合いが長い",
+                        "出身地が九州",
+                        "最近孫が生まれた",
+                        "ラーメンが週3以上で好き",
+                        "愛妻家を自認している"
                     ];
+                    tasks = defaultTasks.map(task => autoWrapText(task));
                 }
             } catch (error) {
                 console.error('CSV読み込みエラー:', error);
-                // エラー時はデフォルトのお題を使用
-                tasks = [
+                // エラー時はデフォルトのお題を使用（自動改行処理も適用）
+                const defaultTasks = [
                     "ゴルフが趣味",
                     "サウナが好き",
                     "勤続20年以上",
                     "釣りが好き",
-                    "御社（ホスト企業）と<br>一番付き合いが長い",
-                    "出身地が<br>九州",
-                    "最近<br>孫が生まれた",
-                    "ラーメンが<br>週3以上で好き",
-                    "愛妻家を<br>自認している"
+                    "御社（ホスト企業）と一番付き合いが長い",
+                    "出身地が九州",
+                    "最近孫が生まれた",
+                    "ラーメンが週3以上で好き",
+                    "愛妻家を自認している"
                 ];
+                tasks = defaultTasks.map(task => autoWrapText(task));
             }
 
             // 2. お題をシャッフルする（Fisher-Yatesアルゴリズム）
