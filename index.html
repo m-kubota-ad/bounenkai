@@ -111,7 +111,7 @@
             flex-direction: column;
             justify-content: flex-start; /* 上部から配置 */
             align-items: center;
-            padding: 8px;
+            padding: 10px 8px;
             box-sizing: border-box;
             cursor: default; /* クリック不可にする */
             text-align: center;
@@ -123,13 +123,14 @@
             font-size: 1.1rem; /* スマホ向けに大きく */
             font-weight: bold;
             color: #333;
-            line-height: 1.3;
-            max-height: 3em; /* 3行分の高さに制限（中央マス対応） */
-            overflow: hidden;
-            margin-bottom: auto; /* 下部に押し下げ */
+            line-height: 1.4;
             text-align: center;
             width: 100%;
             display: block; /* ブロック要素として表示（HTMLタグ対応） */
+            padding: 4px 0;
+            flex: 1; /* 利用可能なスペースを最大限使用 */
+            overflow-y: auto; /* 長い場合はスクロール可能に */
+            word-break: break-word; /* 長い単語も改行 */
         }
         
         /* 達成時のお題テキスト */
@@ -267,10 +268,18 @@
             color: #ffffff;
             word-break: break-all; /* 名前が長くても改行 */
             line-height: 1.4;
+            flex-shrink: 0; /* 縮小しない */
         }
         
         .achieved .achieved-name {
             display: block; /* 達成したら表示 */
+        }
+        
+        /* 達成時はお題エリアを縮小 */
+        .achieved .task {
+            flex: 0 0 auto; /* 達成時は固定サイズ */
+            max-height: 2.5em; /* 達成時は少し小さく */
+            overflow: hidden;
         }
 
     </style>
@@ -284,7 +293,7 @@
             <h2>🎮 ルール説明</h2>
             <ul>
                 <li>各マスに表示されたお題を達成した人を探しましょう</li>
-                <li>マスをタップして、達成した人の「会社名＋名前」を入力すると、マスがオレンジ色に変わります</li>
+                <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
                 <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」です</li>
                 <li>中央のマスは「アダストリアブランドのアイテムを身に着けている」で固定です</li>
             </ul>
@@ -324,7 +333,8 @@
                 <h3 id="modalTask"></h3>
             </div>
             <div class="modal-body">
-                <input type="text" id="modalInput" class="modal-input" placeholder="会社名＋名前" autofocus>
+                <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
+                <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
             </div>
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
@@ -520,13 +530,15 @@
                 const taskText = cell.getAttribute('data-task');
                 const modal = document.getElementById('inputModal');
                 const modalTask = document.getElementById('modalTask');
-                const modalInput = document.getElementById('modalInput');
+                const modalCompanyInput = document.getElementById('modalCompanyInput');
+                const modalNameInput = document.getElementById('modalNameInput');
                 
                 modalTask.textContent = taskText;
-                modalInput.value = '';
+                modalCompanyInput.value = '';
+                modalNameInput.value = '';
                 modal.classList.add('active');
-                // フォーカスを入力欄に
-                setTimeout(() => modalInput.focus(), 100);
+                // フォーカスを会社名入力欄に
+                setTimeout(() => modalCompanyInput.focus(), 100);
             }
 
             // モーダルを閉じる（グローバルスコープに公開）
@@ -540,16 +552,18 @@
             window.submitModal = function() {
                 if (!currentCell) return;
                 
-                const modalInput = document.getElementById('modalInput');
-                const inputValue = modalInput.value.trim();
+                const modalCompanyInput = document.getElementById('modalCompanyInput');
+                const modalNameInput = document.getElementById('modalNameInput');
+                const company = modalCompanyInput.value.trim();
+                const name = modalNameInput.value.trim();
                 
-                if (inputValue === '') {
-                    alert('会社名＋名前を入力してください。');
+                if (company === '' || name === '') {
+                    alert('会社名と名前の両方を入力してください。');
                     return;
                 }
                 
                 const nameDisplay = currentCell.querySelector('.achieved-name');
-                nameDisplay.textContent = inputValue;
+                nameDisplay.innerHTML = `${company}<br>${name}`;
                 currentCell.classList.add('achieved');
                 closeModal();
             };
@@ -575,8 +589,15 @@
                     }
                 });
                 
-                // Enterキーで送信
-                document.getElementById('modalInput').addEventListener('keypress', function(e) {
+                // Enterキーで送信（会社名入力欄から）
+                document.getElementById('modalCompanyInput').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('modalNameInput').focus();
+                    }
+                });
+                
+                // Enterキーで送信（名前入力欄から）
+                document.getElementById('modalNameInput').addEventListener('keypress', function(e) {
                     if (e.key === 'Enter') {
                         submitModal();
                     }
