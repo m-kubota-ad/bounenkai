@@ -129,7 +129,8 @@
             display: block; /* ブロック要素として表示（HTMLタグ対応） */
             padding: 4px 0;
             flex: 1; /* 利用可能なスペースを最大限使用 */
-            overflow-y: auto; /* 長い場合はスクロール可能に */
+            overflow-wrap: break-word; /* 自動折り返し */
+            word-wrap: break-word; /* 自動折り返し（旧ブラウザ対応） */
             word-break: break-word; /* 長い単語も改行 */
         }
         
@@ -262,23 +263,48 @@
         /* 達成後：入力された名前を表示 */
         .achieved-name {
             display: none; /* 通常は非表示 */
-            margin-top: 8px;
             font-size: 1rem; /* スマホ向けに大きく */
             font-weight: bold;
             color: #ffffff;
             word-break: break-all; /* 名前が長くても改行 */
             line-height: 1.4;
             flex-shrink: 0; /* 縮小しない */
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            padding: 0 8px;
+            text-align: center;
         }
         
         .achieved .achieved-name {
             display: block; /* 達成したら表示 */
         }
         
+        /* 未入力時のプレースホルダー */
+        .input-placeholder {
+            display: block;
+            font-size: 1.2rem; /* 大きく */
+            color: #999; /* 灰色 */
+            font-weight: normal;
+            margin-top: auto; /* 下部に配置 */
+            padding-top: 8px;
+            text-align: center;
+            cursor: pointer;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+        }
+        
+        .achieved .input-placeholder {
+            display: none; /* 達成時は非表示 */
+        }
+        
         /* 達成時はお題エリアを縮小 */
         .achieved .task {
-            flex: 0 0 auto; /* 達成時は固定サイズ */
-            max-height: 2.5em; /* 達成時は少し小さく */
+            flex: 1; /* 達成時もお題エリアを使用 */
+            max-height: none; /* 制限なし */
             overflow: hidden;
         }
 
@@ -406,10 +432,8 @@
                     .map(line => line.trim())
                     .filter(line => line.length > 0);
                 
-                // お題を自動改行処理（HTML側で改行位置を決定）
-                tasks = rawTasks
-                    .map(task => autoWrapText(task))
-                    .filter(task => task.length > 0);
+                // お題はそのまま使用（CSSで自動折り返し）
+                tasks = rawTasks.filter(task => task.length > 0);
                 
                 // デフォルトのお題（CSVが読み込めない場合のフォールバック）
                 if (tasks.length === 0) {
@@ -424,7 +448,7 @@
                         "ラーメンが週3以上で好き",
                         "愛妻家を自認している"
                     ];
-                    tasks = defaultTasks.map(task => autoWrapText(task));
+                    tasks = defaultTasks;
                 }
             } catch (error) {
                 console.error('CSV読み込みエラー:', error);
@@ -440,7 +464,7 @@
                     "ラーメンが週3以上で好き",
                     "愛妻家を自認している"
                 ];
-                tasks = defaultTasks.map(task => autoWrapText(task));
+                tasks = defaultTasks;
             }
 
             // 2. お題をシャッフルする（Fisher-Yatesアルゴリズム）
@@ -457,9 +481,9 @@
                 const tbody = document.getElementById('bingo-body');
                 tbody.innerHTML = ''; // 中身をリセット
                 
-                // 中央マス（2行目、2列目）に固定するお題（自動改行処理を適用）
+                // 中央マス（2行目、2列目）に固定するお題
                 const centerTaskRaw = "アダストリアブランドのアイテムを身に着けている";
-                const centerTask = autoWrapText(centerTaskRaw);
+                const centerTask = centerTaskRaw;
                 console.log('中央マスお題（元）:', centerTaskRaw);
                 console.log('中央マスお題（処理後）:', centerTask);
                 
@@ -503,7 +527,8 @@
                         // マスの中身をHTMLで構築
                         td.innerHTML = `
                             <div class="cell-content">
-                                <div class="task">${taskText}</div>
+                                <div class="task">${taskText.replace(/<br>/g, ' ')}</div>
+                                <div class="input-placeholder">タップして入力</div>
                                 <div class="achieved-name"></div>
                             </div>
                         `;
