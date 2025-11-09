@@ -473,7 +473,18 @@
     <script>
         // 認証状態をチェック
         const AUTH_KEY = 'bingo_authenticated';
-        const PASSWORD = 'bounenkai2024'; // パスワード（変更可能）
+        // パスワードのSHA-256ハッシュ値（パスワード: bounenkai2024）
+        // ハッシュ値を変更する場合は、新しいパスワードのSHA-256ハッシュを計算して設定してください
+        const PASSWORD_HASH = '0a47b68a3b2659b0fd7c528e3bdbc7c14ea298a00cdd44366f280151a49a604e';
+
+        // 文字列をSHA-256ハッシュに変換
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
 
         // 認証状態を確認
         function checkAuth() {
@@ -490,12 +501,21 @@
         }
 
         // ログイン処理
-        function handleLogin() {
+        async function handleLogin() {
             const passwordInput = document.getElementById('passwordInput');
             const loginError = document.getElementById('loginError');
             const password = passwordInput.value.trim();
 
-            if (password === PASSWORD) {
+            if (!password) {
+                loginError.classList.add('show');
+                return;
+            }
+
+            // 入力されたパスワードをハッシュ化
+            const passwordHash = await sha256(password);
+
+            // ハッシュ値を比較
+            if (passwordHash === PASSWORD_HASH) {
                 setAuth(true);
                 showBingoContent();
             } else {
