@@ -481,8 +481,8 @@
         
         // ソルト（ランダムな文字列）- レインボーテーブル攻撃を防ぐ
         const SALT = 'bingo_salt_2024_adastria';
-        // パスワードのSHA-256ハッシュ値（パスワード: bounenkai2024）
-        // 計算方法: SHA-256(SALT + 'bounenkai2024')
+        // パスワードのSHA-256ハッシュ値
+        // 計算方法: SHA-256(SALT + パスワード)
         const PASSWORD_HASH = '7d9d9c98d8f339e664f077839bfc5dda8a31152511293c5d7b938cea036d4a68';
 
         // 文字列をSHA-256ハッシュに変換
