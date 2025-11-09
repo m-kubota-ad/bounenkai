@@ -597,21 +597,8 @@
              */
             async loadTasks() {
                 return new Promise((resolve, reject) => {
-                    // グローバルスコープにBINGO_TASKSが定義されているか確認
-                    if (typeof BINGO_TASKS !== 'undefined' && Array.isArray(BINGO_TASKS)) {
-                        if (BINGO_TASKS.length === 0) {
-                            reject(new Error('お題リストが空です'));
-                            return;
-                        }
-                        console.log(`お題リストから${BINGO_TASKS.length}個のお題を読み込みました`);
-                        resolve(BINGO_TASKS);
-                        return;
-                    }
-                    
-                    // tasks.jsファイルを動的に読み込む
-                    const script = document.createElement('script');
-                    script.src = CONFIG.TASKS_FILE;
-                    script.onload = () => {
+                    // BINGO_TASKSが読み込まれるまで待機する関数
+                    const checkAndLoad = (retries = 50) => {
                         if (typeof BINGO_TASKS !== 'undefined' && Array.isArray(BINGO_TASKS)) {
                             if (BINGO_TASKS.length === 0) {
                                 reject(new Error('お題リストが空です'));
@@ -619,14 +606,21 @@
                             }
                             console.log(`お題リストから${BINGO_TASKS.length}個のお題を読み込みました`);
                             resolve(BINGO_TASKS);
-                        } else {
-                            reject(new Error('お題リスト（BINGO_TASKS）が正しく定義されていません'));
+                            return;
                         }
+                        
+                        // リトライ回数を超えた場合はエラー
+                        if (retries <= 0) {
+                            reject(new Error('お題リスト（BINGO_TASKS）が読み込まれませんでした。tasks.jsファイルが正しく読み込まれているか確認してください。'));
+                            return;
+                        }
+                        
+                        // 100ms待ってから再試行
+                        setTimeout(() => checkAndLoad(retries - 1), 100);
                     };
-                    script.onerror = () => {
-                        reject(new Error(`お題リストファイル（${CONFIG.TASKS_FILE}）の読み込みに失敗しました`));
-                    };
-                    document.head.appendChild(script);
+                    
+                    // 即座にチェックして、なければ待機
+                    checkAndLoad();
                 });
             },
 
