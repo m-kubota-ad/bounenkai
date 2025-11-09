@@ -27,7 +27,7 @@
         h1 {
             text-align: center;
             color: #2c3e50;
-            font-size: 1.8rem; /* スマホ向けに大きく */
+            font-size: 1.8rem;
             margin-bottom: 16px;
         }
 
@@ -40,7 +40,7 @@
         }
 
         .rules h2 {
-            font-size: 1.2rem; /* スマホ向けに大きく */
+            font-size: 1.2rem;
             color: #2c3e50;
             margin-top: 0;
             margin-bottom: 12px;
@@ -49,7 +49,7 @@
         .rules ul {
             margin: 0;
             padding-left: 20px;
-            font-size: 1rem; /* スマホ向けに大きく */
+            font-size: 1rem;
             color: #555;
             line-height: 1.6;
         }
@@ -64,7 +64,7 @@
             padding: 14px;
             margin-top: 12px;
             border-radius: 4px;
-            font-size: 0.95rem; /* スマホ向けに大きく */
+            font-size: 0.95rem;
             color: #856404;
             line-height: 1.6;
         }
@@ -89,17 +89,14 @@
             border: 3px solid #f7f7f7;
             background-color: #ffffff;
             user-select: none;
-            /* 達成時のスタイル */
+            cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        /* 達成したマスのスタイル */
         .bingo-card td.achieved {
-            background-color: #ff9800; /* オレンジ色 */
+            background-color: #ff9800;
         }
 
-
-        /* マスの中身(テキスト)のスタイル */
         .cell-content {
             position: absolute;
             top: 0;
@@ -107,47 +104,72 @@
             bottom: 0;
             right: 0;
             display: flex;
-            /* 要素を縦に並べる */
             flex-direction: column;
-            justify-content: flex-start; /* 上部から配置 */
+            justify-content: flex-start;
             align-items: center;
             padding: 10px 8px;
             box-sizing: border-box;
-            cursor: default; /* クリック不可にする */
             text-align: center;
-            overflow: hidden; /* はみ出しを防ぐ */
+            overflow: hidden;
         }
 
-        /* お題のテキスト */
         .task {
-            font-size: 1.1rem; /* スマホ向けに大きく */
+            font-size: 1.1rem;
             font-weight: bold;
             color: #333;
             line-height: 1.4;
             text-align: center;
             width: 100%;
-            display: block; /* ブロック要素として表示（HTMLタグ対応） */
+            display: block;
             padding: 4px 0;
-            flex: 1; /* 利用可能なスペースを最大限使用 */
-            overflow-wrap: break-word; /* 自動折り返し */
-            word-wrap: break-word; /* 自動折り返し（旧ブラウザ対応） */
-            word-break: break-word; /* 長い単語も改行 */
+            flex: 1;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
         }
         
-        /* 達成時のお題テキスト */
         .achieved .task {
             color: #fff;
             text-decoration: line-through;
         }
 
-        /* 入力エリア（非表示 - モーダルで入力） */
-        .input-area {
+        .achieved-name {
             display: none;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffffff;
+            word-break: break-all;
+            line-height: 1.4;
+            flex-shrink: 0;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            padding: 0 8px;
+            text-align: center;
         }
-
-        /* マスクリック時にポインターを表示 */
-        .bingo-card td {
+        
+        .achieved .achieved-name {
+            display: block;
+        }
+        
+        .input-placeholder {
+            display: block;
+            font-size: 1.2rem;
+            color: #999;
+            font-weight: normal;
+            margin-top: auto;
+            padding-top: 8px;
+            text-align: center;
             cursor: pointer;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+        }
+        
+        .achieved .input-placeholder {
+            display: none;
         }
 
         /* モーダルダイアログ */
@@ -212,7 +234,7 @@
 
         .modal-input {
             width: 100%;
-            font-size: 1.1rem; /* スマホ向けに大きく */
+            font-size: 1.1rem;
             padding: 12px;
             margin-bottom: 16px;
             box-sizing: border-box;
@@ -258,54 +280,6 @@
 
         .modal-btn-secondary:active {
             background-color: #7f8c8d;
-        }
-        
-        /* 達成後：入力された名前を表示 */
-        .achieved-name {
-            display: none; /* 通常は非表示 */
-            font-size: 1rem; /* スマホ向けに大きく */
-            font-weight: bold;
-            color: #ffffff;
-            word-break: break-all; /* 名前が長くても改行 */
-            line-height: 1.4;
-            flex-shrink: 0; /* 縮小しない */
-            position: absolute;
-            bottom: 8px;
-            left: 0;
-            right: 0;
-            padding: 0 8px;
-            text-align: center;
-        }
-        
-        .achieved .achieved-name {
-            display: block; /* 達成したら表示 */
-        }
-        
-        /* 未入力時のプレースホルダー */
-        .input-placeholder {
-            display: block;
-            font-size: 1.2rem; /* 大きく */
-            color: #999; /* 灰色 */
-            font-weight: normal;
-            margin-top: auto; /* 下部に配置 */
-            padding-top: 8px;
-            text-align: center;
-            cursor: pointer;
-            position: absolute;
-            bottom: 8px;
-            left: 0;
-            right: 0;
-        }
-        
-        .achieved .input-placeholder {
-            display: none; /* 達成時は非表示 */
-        }
-        
-        /* 達成時はお題エリアを縮小 */
-        .achieved .task {
-            flex: 1; /* 達成時もお題エリアを使用 */
-            max-height: none; /* 制限なし */
-            overflow: hidden;
         }
 
         /* ログイン画面 */
@@ -384,7 +358,6 @@
             display: block;
         }
 
-        /* 認証済みの場合のみBINGOカードを表示 */
         .bingo-content {
             display: none;
         }
@@ -393,10 +366,34 @@
             display: block;
         }
 
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header-actions h1 {
+            margin: 0;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #7f8c8d;
+        }
+
     </style>
 </head>
 <body>
-
     <!-- ログイン画面 -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
@@ -409,357 +406,337 @@
 
     <!-- BINGOカードコンテンツ -->
     <div id="bingoContent" class="bingo-content">
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h1 style="margin: 0;">忘年会 クロスBINGO</h1>
-            <button onclick="handleLogout()" style="padding: 8px 16px; background-color: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">ログアウト</button>
+        <div class="container">
+            <div class="header-actions">
+                <h1>忘年会 クロスBINGO</h1>
+                <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+            </div>
+            
+            <div class="rules">
+                <h2>🎮 ルール説明</h2>
+                <ul>
+                    <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
+                    <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
+                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
+                </ul>
+                <div class="notice">
+                    <strong>⚠️ ご注意</strong><br>
+                    ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+                </div>
+            </div>
+            
+            <table class="bingo-card">
+                <tbody id="bingo-body"></tbody>
+            </table>
         </div>
-        
-        <div class="rules">
-            <h2>🎮 ルール説明</h2>
-            <ul>
-                <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
-                <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
-                <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
-            </ul>
-            <div class="notice">
-                <strong>⚠️ ご注意</strong><br>
-                ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+
+        <!-- モーダルダイアログ -->
+        <div id="inputModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTask"></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
+                    <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
+                    <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
+                </div>
             </div>
         </div>
-        
-        <table class="bingo-card">
-            <!-- JavaScriptで <tbody> の中身が生成されます -->
-            <tbody id="bingo-body">
-                <!-- 
-                ↓ JavaScriptによって、以下のような構造がランダムに生成されます
-                <tr>
-                    <td>
-                        <div class="cell-content">
-                            <div class="task">お題テキスト</div>
-                            <div class="input-area">
-                                <input type="text" placeholder="名前" class="name-input">
-                                <button class="submit-btn">OK</button>
-                            </div>
-                            <div class="achieved-name"></div>
-                        </div>
-                    </td>
-                    ...
-                </tr> 
-                -->
-            </tbody>
-        </table>
     </div>
 
-    <!-- モーダルダイアログ -->
-    <div id="inputModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTask"></h3>
-            </div>
-            <div class="modal-body">
-                <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
-                <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
-                <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
-            </div>
-        </div>
-    </div>
-    </div>
+    <!-- お題リストを読み込む -->
+    <script src="tasks.js"></script>
 
     <script>
-        // 認証状態をチェック
-        const AUTH_KEY = 'bingo_authenticated';
-        const SALT = 'bingo_salt_2024_adastria';
-        const PASSWORD_HASH = '7d9d9c98d8f339e664f077839bfc5dda8a31152511293c5d7b938cea036d4a68';
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
-        }
-        
-        // ソルト付きハッシュを計算
-        async function hashWithSalt(password) {
-            return await sha256(SALT + password);
-        }
+        // ============================================
+        // 定数定義
+        // ============================================
+        const CONFIG = {
+            AUTH_KEY: 'bingo_authenticated',
+            SALT: 'bingo_salt_2024_adastria',
+            PASSWORD_HASH: '7d9d9c98d8f339e664f077839bfc5dda8a31152511293c5d7b938cea036d4a68',
+            TASKS_FILE: 'tasks.js',
+            CENTER_TASK: 'アダストリアブランドのアイテムを身に着けている',
+            BINGO_SIZE: 3,
+            REQUIRED_TASKS: 8,
+            ERROR_DISPLAY_TIME: 3000
+        };
 
-        // 認証状態を確認
-        function checkAuth() {
-            return localStorage.getItem(AUTH_KEY) === 'true';
-        }
+        const SELECTORS = {
+            loginScreen: '#loginScreen',
+            bingoContent: '#bingoContent',
+            passwordInput: '#passwordInput',
+            loginError: '#loginError',
+            inputModal: '#inputModal',
+            modalTask: '#modalTask',
+            modalCompanyInput: '#modalCompanyInput',
+            modalNameInput: '#modalNameInput',
+            bingoBody: '#bingo-body'
+        };
 
-        // 認証状態を保存
-        function setAuth(authenticated) {
-            if (authenticated) {
-                localStorage.setItem(AUTH_KEY, 'true');
-            } else {
-                localStorage.removeItem(AUTH_KEY);
-            }
-        }
+        // ============================================
+        // 認証モジュール
+        // ============================================
+        const AuthModule = {
+            /**
+             * SHA-256ハッシュを計算
+             * @param {string} message - ハッシュ化する文字列
+             * @returns {Promise<string>} ハッシュ値（16進数）
+             */
+            async sha256(message) {
+                const msgBuffer = new TextEncoder().encode(message);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            },
 
-        // ログイン処理
-        async function handleLogin() {
-            const passwordInput = document.getElementById('passwordInput');
-            const loginError = document.getElementById('loginError');
-            const password = passwordInput.value.trim();
+            /**
+             * ソルト付きハッシュを計算
+             * @param {string} password - パスワード
+             * @returns {Promise<string>} ハッシュ値
+             */
+            async hashWithSalt(password) {
+                return await this.sha256(CONFIG.SALT + password);
+            },
 
-            if (!password) {
-                loginError.classList.add('show');
-                return;
-            }
+            /**
+             * 認証状態を確認
+             * @returns {boolean} 認証済みかどうか
+             */
+            checkAuth() {
+                return localStorage.getItem(CONFIG.AUTH_KEY) === 'true';
+            },
 
-            // 入力されたパスワードをソルト付きでハッシュ化
-            const passwordHash = await hashWithSalt(password);
+            /**
+             * 認証状態を保存
+             * @param {boolean} authenticated - 認証状態
+             */
+            setAuth(authenticated) {
+                if (authenticated) {
+                    localStorage.setItem(CONFIG.AUTH_KEY, 'true');
+                } else {
+                    localStorage.removeItem(CONFIG.AUTH_KEY);
+                }
+            },
 
-            // ハッシュ値を比較
-            if (passwordHash === PASSWORD_HASH) {
-                setAuth(true);
-                showBingoContent();
-            } else {
+            /**
+             * ログイン処理
+             */
+            async handleLogin() {
+                const passwordInput = document.querySelector(SELECTORS.passwordInput);
+                const loginError = document.querySelector(SELECTORS.loginError);
+                const password = passwordInput.value.trim();
+
+                if (!password) {
+                    loginError.classList.add('show');
+                    return;
+                }
+
+                try {
+                    const passwordHash = await this.hashWithSalt(password);
+                    if (passwordHash === CONFIG.PASSWORD_HASH) {
+                        this.setAuth(true);
+                        BingoModule.showBingoContent();
+                    } else {
+                        this.showLoginError(loginError, passwordInput);
+                    }
+                } catch (error) {
+                    console.error('ログインエラー:', error);
+                    this.showLoginError(loginError, passwordInput);
+                }
+            },
+
+            /**
+             * ログインエラーを表示
+             * @param {HTMLElement} loginError - エラー表示要素
+             * @param {HTMLElement} passwordInput - パスワード入力要素
+             */
+            showLoginError(loginError, passwordInput) {
                 loginError.classList.add('show');
                 passwordInput.value = '';
                 setTimeout(() => {
                     loginError.classList.remove('show');
-                }, 3000);
-            }
-        }
+                }, CONFIG.ERROR_DISPLAY_TIME);
+            },
 
-        // BINGOコンテンツを表示
-        function showBingoContent() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('bingoContent').classList.add('authenticated');
-        }
-
-        // ログアウト処理
-        function handleLogout() {
-            setAuth(false);
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('bingoContent').classList.remove('authenticated');
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
-        }
-
-        // Enterキーでログイン
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('passwordInput');
-            if (passwordInput) {
-                passwordInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        handleLogin();
-                    }
-                });
+            /**
+             * ログアウト処理
+             */
+            handleLogout() {
+                this.setAuth(false);
+                document.querySelector(SELECTORS.loginScreen).style.display = 'flex';
+                document.querySelector(SELECTORS.bingoContent).classList.remove('authenticated');
+                const passwordInput = document.querySelector(SELECTORS.passwordInput);
+                passwordInput.value = '';
+                passwordInput.focus();
             }
+        };
 
-            // 認証状態をチェック
-            if (checkAuth()) {
-                showBingoContent();
-            }
-        });
+        // ============================================
+        // BINGOカードモジュール
+        // ============================================
+        const BingoModule = {
+            tasks: [],
+            currentCell: null,
 
-        // DOM（HTML）の読み込みが完了したら実行
-        document.addEventListener('DOMContentLoaded', async function() {
-            // 認証されていない場合は処理をスキップ
-            if (!checkAuth()) {
-                return;
-            }
-            
-            // テキストを自動改行する関数（長いテキストを適切な位置で改行）
-            function autoWrapText(text) {
-                if (!text || text.length === 0) return '';
-                
-                // 改行タグを削除してテキストのみにする
-                const cleanText = text.replace(/<br>/gi, '').trim();
-                
-                // 短いテキスト（10文字以下）はそのまま返す
-                if (cleanText.length <= 10) {
-                    return cleanText;
-                }
-                
-                // 長いテキストの場合、適切な位置で改行を挿入
-                // 括弧がある場合は括弧の後で改行
-                const parenMatch = cleanText.match(/（[^）]+）/);
-                if (parenMatch && cleanText.length > 12) {
-                    const parenIndex = cleanText.indexOf('）');
-                    if (parenIndex > 0 && parenIndex < cleanText.length - 3) {
-                        return cleanText.substring(0, parenIndex + 1) + '<br>' + cleanText.substring(parenIndex + 1);
-                    }
-                }
-                
-                // 句読点がある場合は句読点の後で改行
-                const punctuationMatch = cleanText.match(/[、。，．]/);
-                if (punctuationMatch && cleanText.length > 12) {
-                    const punctIndex = cleanText.indexOf(punctuationMatch[0]);
-                    if (punctIndex > 0 && punctIndex < cleanText.length - 3) {
-                        return cleanText.substring(0, punctIndex + 1) + '<br>' + cleanText.substring(punctIndex + 1);
-                    }
-                }
-                
-                // 区切り文字がない場合は文字数で判断（12文字程度で改行）
-                if (cleanText.length > 12) {
-                    // 中点を探す
-                    const midPoint = Math.floor(cleanText.length / 2);
-                    const midDotIndex = cleanText.indexOf('・', midPoint - 3);
-                    if (midDotIndex > 0) {
-                        return cleanText.substring(0, midDotIndex + 1) + '<br>' + cleanText.substring(midDotIndex + 1);
-                    }
-                    // 中点がない場合は中央付近で改行
-                    return cleanText.substring(0, midPoint) + '<br>' + cleanText.substring(midPoint);
-                }
-                
-                return cleanText;
-            }
-            
-            // 1. CSVファイルからお題リストを読み込む
-            let tasks = [];
-            try {
-                const response = await fetch('tasks.csv');
-                if (!response.ok) {
-                    throw new Error('CSVファイルの読み込みに失敗しました');
-                }
-                const csvText = await response.text();
-                // CSVを1行1お題として読み込む（空行を無視）
-                const rawTasks = csvText.split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line.length > 0);
-                
-                // お題はそのまま使用（CSSで自動折り返し）
-                tasks = rawTasks.filter(task => task.length > 0);
-                
-                // デフォルトのお題（CSVが読み込めない場合のフォールバック）
-                if (tasks.length === 0) {
-                    const defaultTasks = [
-                        "ゴルフが趣味",
-                        "サウナが好き",
-                        "勤続20年以上",
-                        "釣りが好き",
-                        "御社（ホスト企業）と一番付き合いが長い",
-                        "出身地が九州",
-                        "最近孫が生まれた",
-                        "ラーメンが週3以上で好き",
-                        "愛妻家を自認している"
-                    ];
-                    tasks = defaultTasks;
-                }
-            } catch (error) {
-                console.error('CSV読み込みエラー:', error);
-                // エラー時はデフォルトのお題を使用（自動改行処理も適用）
-                const defaultTasks = [
-                    "ゴルフが趣味",
-                    "サウナが好き",
-                    "勤続20年以上",
-                    "釣りが好き",
-                    "御社（ホスト企業）と一番付き合いが長い",
-                    "出身地が九州",
-                    "最近孫が生まれた",
-                    "ラーメンが週3以上で好き",
-                    "愛妻家を自認している"
-                ];
-                tasks = defaultTasks;
-            }
+            /**
+             * BINGOコンテンツを表示
+             */
+            showBingoContent() {
+                document.querySelector(SELECTORS.loginScreen).style.display = 'none';
+                document.querySelector(SELECTORS.bingoContent).classList.add('authenticated');
+            },
 
-            // 2. お題をシャッフルする（Fisher-Yatesアルゴリズム）
-            function shuffle(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            }
-
-            // 3. BINGOカードをHTMLとして生成する
-            function createBingoCard() {
-                const tbody = document.getElementById('bingo-body');
-                tbody.innerHTML = ''; // 中身をリセット
-                
-                // 中央マス（2行目、2列目）に固定するお題
-                const centerTaskRaw = "アダストリアブランドのアイテムを身に着けている";
-                const centerTask = centerTaskRaw;
-                console.log('中央マスお題（元）:', centerTaskRaw);
-                console.log('中央マスお題（処理後）:', centerTask);
-                
-                // 中央マス用のお題を除外したリストを作成（元のテキストで比較）
-                const tasksWithoutCenter = tasks.filter(task => {
-                    const cleanTask = task.replace(/<br>/gi, '').trim();
-                    return cleanTask !== centerTaskRaw;
-                });
-                
-                // 8マス分のお題が必要（中央マス以外）
-                if (tasksWithoutCenter.length < 8) {
-                    console.warn('お題が8個未満です。8個以上用意してください。');
-                }
-                
-                // 8つのお題をシャッフル
-                const shuffledTasks = shuffle([...tasksWithoutCenter]);
-                
-                let taskIndex = 0;
-                for (let i = 0; i < 3; i++) { // 3行
-                    const tr = document.createElement('tr');
-                    for (let j = 0; j < 3; j++) { // 3列
-                        const td = document.createElement('td');
-                        // 中央マス（i=1, j=1）の場合は固定のお題を使用
-                        let taskText;
-                        if (i === 1 && j === 1) {
-                            // 中央マスは必ず固定のお題を使用
-                            taskText = centerTask;
-                        } else {
-                            // それ以外のマス
-                            if (taskIndex < shuffledTasks.length) {
-                                taskText = shuffledTasks[taskIndex++];
-                            } else {
-                                // お題が足りない場合のフォールバック
-                                taskText = 'お題が足りません';
-                            }
+            /**
+             * JavaScriptファイルからお題リストを読み込む
+             * @returns {Promise<string[]>} お題の配列
+             */
+            async loadTasks() {
+                return new Promise((resolve, reject) => {
+                    // グローバルスコープにBINGO_TASKSが定義されているか確認
+                    if (typeof BINGO_TASKS !== 'undefined' && Array.isArray(BINGO_TASKS)) {
+                        if (BINGO_TASKS.length === 0) {
+                            reject(new Error('お題リストが空です'));
+                            return;
                         }
+                        console.log(`お題リストから${BINGO_TASKS.length}個のお題を読み込みました`);
+                        resolve(BINGO_TASKS);
+                        return;
+                    }
+                    
+                    // tasks.jsファイルを動的に読み込む
+                    const script = document.createElement('script');
+                    script.src = CONFIG.TASKS_FILE;
+                    script.onload = () => {
+                        if (typeof BINGO_TASKS !== 'undefined' && Array.isArray(BINGO_TASKS)) {
+                            if (BINGO_TASKS.length === 0) {
+                                reject(new Error('お題リストが空です'));
+                                return;
+                            }
+                            console.log(`お題リストから${BINGO_TASKS.length}個のお題を読み込みました`);
+                            resolve(BINGO_TASKS);
+                        } else {
+                            reject(new Error('お題リスト（BINGO_TASKS）が正しく定義されていません'));
+                        }
+                    };
+                    script.onerror = () => {
+                        reject(new Error(`お題リストファイル（${CONFIG.TASKS_FILE}）の読み込みに失敗しました`));
+                    };
+                    document.head.appendChild(script);
+                });
+            },
+
+            /**
+             * 配列をシャッフル（Fisher-Yatesアルゴリズム）
+             * @param {Array} array - シャッフルする配列
+             * @returns {Array} シャッフルされた配列
+             */
+            shuffle(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            },
+
+            /**
+             * テキストをエスケープ（XSS対策）
+             * @param {string} text - エスケープするテキスト
+             * @returns {string} エスケープされたテキスト
+             */
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            /**
+             * BINGOカードを生成
+             */
+            createBingoCard() {
+                const tbody = document.querySelector(SELECTORS.bingoBody);
+                tbody.innerHTML = '';
+                
+                // 中央マス用のお題を除外
+                const tasksWithoutCenter = this.tasks.filter(task => {
+                    const cleanTask = task.replace(/<br>/gi, '').trim();
+                    return cleanTask !== CONFIG.CENTER_TASK;
+                });
+                
+                if (tasksWithoutCenter.length < CONFIG.REQUIRED_TASKS) {
+                    console.warn(`お題が${CONFIG.REQUIRED_TASKS}個未満です。${CONFIG.REQUIRED_TASKS}個以上用意してください。`);
+                }
+                
+                const shuffledTasks = this.shuffle(tasksWithoutCenter);
+                let taskIndex = 0;
+                
+                for (let i = 0; i < CONFIG.BINGO_SIZE; i++) {
+                    const tr = document.createElement('tr');
+                    for (let j = 0; j < CONFIG.BINGO_SIZE; j++) {
+                        const td = document.createElement('td');
+                        const isCenter = i === 1 && j === 1;
+                        const taskText = isCenter 
+                            ? CONFIG.CENTER_TASK 
+                            : (taskIndex < shuffledTasks.length ? shuffledTasks[taskIndex++] : 'お題が足りません');
                         
-                        // aria-label用に<br>タグを削除したテキストを作成
+                        const taskTextEscaped = this.escapeHtml(taskText);
                         const taskTextForAria = taskText.replace(/<br>/g, ' ');
                         
-                        // マスの中身をHTMLで構築
-                        td.innerHTML = `
-                            <div class="cell-content">
-                                <div class="task">${taskText.replace(/<br>/g, ' ')}</div>
-                                <div class="input-placeholder">タップして入力</div>
-                                <div class="achieved-name"></div>
-                            </div>
-                        `;
-                        // データ属性にお題を保存（モーダル用）
+                        // セルコンテンツを作成
+                        const cellContent = document.createElement('div');
+                        cellContent.className = 'cell-content';
+                        
+                        const taskDiv = document.createElement('div');
+                        taskDiv.className = 'task';
+                        taskDiv.textContent = taskText.replace(/<br>/g, ' ');
+                        cellContent.appendChild(taskDiv);
+                        
+                        const placeholderDiv = document.createElement('div');
+                        placeholderDiv.className = 'input-placeholder';
+                        placeholderDiv.textContent = 'タップして入力';
+                        cellContent.appendChild(placeholderDiv);
+                        
+                        const nameDiv = document.createElement('div');
+                        nameDiv.className = 'achieved-name';
+                        cellContent.appendChild(nameDiv);
+                        
+                        td.appendChild(cellContent);
                         td.setAttribute('data-task', taskTextForAria);
                         td.setAttribute('data-task-html', taskText);
                         tr.appendChild(td);
                     }
                     tbody.appendChild(tr);
                 }
-            }
+            },
 
-            // 現在編集中のマスを保存
-            let currentCell = null;
-
-            // モーダルを開く
-            function openModal(cell) {
-                currentCell = cell;
+            /**
+             * モーダルを開く
+             * @param {HTMLElement} cell - クリックされたセル
+             */
+            openModal(cell) {
+                this.currentCell = cell;
                 const taskText = cell.getAttribute('data-task');
-                const modal = document.getElementById('inputModal');
-                const modalTask = document.getElementById('modalTask');
-                const modalCompanyInput = document.getElementById('modalCompanyInput');
-                const modalNameInput = document.getElementById('modalNameInput');
+                const modal = document.querySelector(SELECTORS.inputModal);
+                const modalTask = document.querySelector(SELECTORS.modalTask);
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
                 
                 modalTask.textContent = taskText;
                 
                 // 既に入力済みの場合は既存の値を表示
                 const nameDisplay = cell.querySelector('.achieved-name');
-                if (cell.classList.contains('achieved') && nameDisplay.innerHTML) {
-                    // innerHTMLから<br>タグをスペースに変換して分割
-                    const currentText = nameDisplay.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+                if (cell.classList.contains('achieved') && nameDisplay.textContent) {
+                    const currentText = nameDisplay.textContent;
                     const parts = currentText.split('\n');
                     if (parts.length >= 2) {
                         modalCompanyInput.value = parts[0].trim();
                         modalNameInput.value = parts[1].trim();
                     } else {
-                        // 改行がない場合は最初のスペースで分割を試みる
                         const spaceIndex = currentText.indexOf(' ');
                         if (spaceIndex > 0) {
                             modalCompanyInput.value = currentText.substring(0, spaceIndex).trim();
@@ -775,23 +752,26 @@
                 }
                 
                 modal.classList.add('active');
-                // フォーカスを会社名入力欄に
                 setTimeout(() => modalCompanyInput.focus(), 100);
-            }
+            },
 
-            // モーダルを閉じる（グローバルスコープに公開）
-            window.closeModal = function() {
-                const modal = document.getElementById('inputModal');
+            /**
+             * モーダルを閉じる
+             */
+            closeModal() {
+                const modal = document.querySelector(SELECTORS.inputModal);
                 modal.classList.remove('active');
-                currentCell = null;
-            };
+                this.currentCell = null;
+            },
 
-            // モーダルから送信（グローバルスコープに公開）
-            window.submitModal = function() {
-                if (!currentCell) return;
+            /**
+             * モーダルから送信
+             */
+            submitModal() {
+                if (!this.currentCell) return;
                 
-                const modalCompanyInput = document.getElementById('modalCompanyInput');
-                const modalNameInput = document.getElementById('modalNameInput');
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
                 const company = modalCompanyInput.value.trim();
                 const name = modalNameInput.value.trim();
                 
@@ -800,54 +780,95 @@
                     return;
                 }
                 
-                const nameDisplay = currentCell.querySelector('.achieved-name');
-                nameDisplay.innerHTML = `${company}<br>${name}`;
-                currentCell.classList.add('achieved');
-                closeModal();
-            };
+                const nameDisplay = this.currentCell.querySelector('.achieved-name');
+                // テキストノードとして設定（XSS対策）
+                nameDisplay.textContent = `${company}\n${name}`;
+                nameDisplay.style.whiteSpace = 'pre-line';
+                this.currentCell.classList.add('achieved');
+                this.closeModal();
+            },
 
-            // 4. マスクリック時にモーダルを開く
-            function setupEventListeners() {
-                const bingoBody = document.getElementById('bingo-body');
+            /**
+             * イベントリスナーを設定
+             */
+            setupEventListeners() {
+                const bingoBody = document.querySelector(SELECTORS.bingoBody);
+                const modal = document.querySelector(SELECTORS.inputModal);
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
                 
-                // イベント委任（tbody全体でクリックを監視）
-                bingoBody.addEventListener('click', function(e) {
-                    // クリックされたのがtdかその子要素か判定
+                // セルクリック
+                bingoBody.addEventListener('click', (e) => {
                     const cell = e.target.closest('td');
                     if (cell) {
-                        openModal(cell);
+                        this.openModal(cell);
                     }
                 });
                 
-                // モーダルの背景をクリックしたら閉じる
-                const modal = document.getElementById('inputModal');
-                modal.addEventListener('click', function(e) {
+                // モーダル背景クリック
+                modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
-                        closeModal();
+                        this.closeModal();
                     }
                 });
                 
-                // Enterキーで送信（会社名入力欄から）
-                document.getElementById('modalCompanyInput').addEventListener('keypress', function(e) {
+                // Enterキー処理
+                modalCompanyInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
-                        document.getElementById('modalNameInput').focus();
+                        modalNameInput.focus();
                     }
                 });
                 
-                // Enterキーで送信（名前入力欄から）
-                document.getElementById('modalNameInput').addEventListener('keypress', function(e) {
+                modalNameInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
-                        submitModal();
+                        this.submitModal();
+                    }
+                });
+            },
+
+            /**
+             * BINGOカードを初期化
+             */
+            async init() {
+                try {
+                    this.tasks = await this.loadTasks();
+                    this.createBingoCard();
+                    this.setupEventListeners();
+                } catch (error) {
+                    console.error('BINGOカードの初期化に失敗しました:', error);
+                    alert(`お題リストの読み込みに失敗しました。\n\nエラー: ${error.message}\n\nページを再読み込みしてください。`);
+                }
+            }
+        };
+
+        // ============================================
+        // グローバル関数（HTMLのonclick属性用）
+        // ============================================
+        window.handleLogin = () => AuthModule.handleLogin();
+        window.handleLogout = () => AuthModule.handleLogout();
+        window.closeModal = () => BingoModule.closeModal();
+        window.submitModal = () => BingoModule.submitModal();
+
+        // ============================================
+        // 初期化
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // ログインパスワード入力のEnterキー処理
+            const passwordInput = document.querySelector(SELECTORS.passwordInput);
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        await AuthModule.handleLogin();
                     }
                 });
             }
 
-            // --- 実行 ---
-            createBingoCard();    // カードを生成
-            setupEventListeners(); // ボタンの監視を開始
+            // 認証状態をチェック
+            if (AuthModule.checkAuth()) {
+                BingoModule.showBingoContent();
+                BingoModule.init();
+            }
         });
     </script>
-
 </body>
 </html>
-
