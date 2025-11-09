@@ -473,9 +473,17 @@
     <script>
         // 認証状態をチェック
         const AUTH_KEY = 'bingo_authenticated';
+        
+        // セキュリティに関する注意：
+        // クライアントサイドのJavaScriptでは完全なセキュリティは保証できません。
+        // ハッシュ値はコード内に含まれますが、平文パスワードは含まれません。
+        // より強固なセキュリティが必要な場合は、サーバーサイド認証の実装を検討してください。
+        
+        // ソルト（ランダムな文字列）- レインボーテーブル攻撃を防ぐ
+        const SALT = 'bingo_salt_2024_adastria';
         // パスワードのSHA-256ハッシュ値（パスワード: bounenkai2024）
-        // ハッシュ値を変更する場合は、新しいパスワードのSHA-256ハッシュを計算して設定してください
-        const PASSWORD_HASH = '0a47b68a3b2659b0fd7c528e3bdbc7c14ea298a00cdd44366f280151a49a604e';
+        // 計算方法: SHA-256(SALT + 'bounenkai2024')
+        const PASSWORD_HASH = '7d9d9c98d8f339e664f077839bfc5dda8a31152511293c5d7b938cea036d4a68';
 
         // 文字列をSHA-256ハッシュに変換
         async function sha256(message) {
@@ -484,6 +492,11 @@
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             return hashHex;
+        }
+        
+        // ソルト付きハッシュを計算
+        async function hashWithSalt(password) {
+            return await sha256(SALT + password);
         }
 
         // 認証状態を確認
@@ -511,8 +524,8 @@
                 return;
             }
 
-            // 入力されたパスワードをハッシュ化
-            const passwordHash = await sha256(password);
+            // 入力されたパスワードをソルト付きでハッシュ化
+            const passwordHash = await hashWithSalt(password);
 
             // ハッシュ値を比較
             if (passwordHash === PASSWORD_HASH) {
