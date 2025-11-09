@@ -308,12 +308,112 @@
             overflow: hidden;
         }
 
+        /* ログイン画面 */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            font-size: 1.1rem;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .login-btn:active {
+            background-color: #21618c;
+        }
+
+        .login-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* 認証済みの場合のみBINGOカードを表示 */
+        .bingo-content {
+            display: none;
+        }
+
+        .bingo-content.authenticated {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
 
+    <!-- ログイン画面 -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>忘年会 クロスBINGO</h2>
+            <input type="password" id="passwordInput" class="login-input" placeholder="パスワードを入力" autofocus>
+            <button class="login-btn" onclick="handleLogin()">ログイン</button>
+            <div id="loginError" class="login-error">パスワードが正しくありません</div>
+        </div>
+    </div>
+
+    <!-- BINGOカードコンテンツ -->
+    <div id="bingoContent" class="bingo-content">
     <div class="container">
-        <h1>忘年会 クロスBINGO</h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h1 style="margin: 0;">忘年会 クロスBINGO</h1>
+            <button onclick="handleLogout()" style="padding: 8px 16px; background-color: #95a5a6; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">ログアウト</button>
+        </div>
         
         <div class="rules">
             <h2>🎮 ルール説明</h2>
@@ -368,10 +468,83 @@
             </div>
         </div>
     </div>
+    </div>
 
     <script>
+        // 認証状態をチェック
+        const AUTH_KEY = 'bingo_authenticated';
+        const PASSWORD = 'bounenkai2024'; // パスワード（変更可能）
+
+        // 認証状態を確認
+        function checkAuth() {
+            return localStorage.getItem(AUTH_KEY) === 'true';
+        }
+
+        // 認証状態を保存
+        function setAuth(authenticated) {
+            if (authenticated) {
+                localStorage.setItem(AUTH_KEY, 'true');
+            } else {
+                localStorage.removeItem(AUTH_KEY);
+            }
+        }
+
+        // ログイン処理
+        function handleLogin() {
+            const passwordInput = document.getElementById('passwordInput');
+            const loginError = document.getElementById('loginError');
+            const password = passwordInput.value.trim();
+
+            if (password === PASSWORD) {
+                setAuth(true);
+                showBingoContent();
+            } else {
+                loginError.classList.add('show');
+                passwordInput.value = '';
+                setTimeout(() => {
+                    loginError.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // BINGOコンテンツを表示
+        function showBingoContent() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('bingoContent').classList.add('authenticated');
+        }
+
+        // ログアウト処理
+        function handleLogout() {
+            setAuth(false);
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('bingoContent').classList.remove('authenticated');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        // Enterキーでログイン
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleLogin();
+                    }
+                });
+            }
+
+            // 認証状態をチェック
+            if (checkAuth()) {
+                showBingoContent();
+            }
+        });
+
         // DOM（HTML）の読み込みが完了したら実行
         document.addEventListener('DOMContentLoaded', async function() {
+            // 認証されていない場合は処理をスキップ
+            if (!checkAuth()) {
+                return;
+            }
             
             // テキストを自動改行する関数（長いテキストを適切な位置で改行）
             function autoWrapText(text) {
