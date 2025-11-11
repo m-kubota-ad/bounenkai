@@ -19,6 +19,93 @@
             flex-direction: column;
         }
 
+        /* ログイン画面 */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            font-size: 1.1rem;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .login-btn:active {
+            background-color: #21618c;
+        }
+
+        .login-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* PDF表示コンテンツ */
+        .pdf-content {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .pdf-content.authenticated {
+            display: flex;
+        }
+
         .header {
             background-color: #ffffff;
             padding: 16px;
@@ -33,20 +120,18 @@
             color: #2c3e50;
         }
 
-        .back-btn {
+        .logout-btn {
             padding: 8px 16px;
-            background-color: #3498db;
+            background-color: #95a5a6;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.9rem;
-            text-decoration: none;
-            display: inline-block;
         }
 
-        .back-btn:hover {
-            background-color: #2980b9;
+        .logout-btn:hover {
+            background-color: #7f8c8d;
         }
 
         .pdf-container {
@@ -89,43 +174,117 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>PDF表示</h1>
+    <!-- ログイン画面 -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>PDF表示</h2>
+            <input type="password" id="passwordInput" class="login-input" placeholder="パスワードを入力" autofocus>
+            <button class="login-btn" onclick="handleLogin()">ログイン</button>
+            <div id="loginError" class="login-error">パスワードが正しくありません</div>
+        </div>
     </div>
-    
-    <div class="pdf-container">
-        <iframe id="pdfViewer" class="pdf-viewer" src="" title="PDF Viewer">
-            <div class="error-message">
-                <p>PDFファイルを読み込めませんでした。</p>
-                <p>PDFファイルのパスを確認してください。</p>
-            </div>
-        </iframe>
-    </div>
+
+    <!-- PDF表示コンテンツ（認証後に動的に生成） -->
+    <div id="pdfContent" class="pdf-content"></div>
+
+    <!-- 認証モジュールを読み込む -->
+    <script src="../common/auth.js"></script>
 
     <script>
-        // URLパラメータからPDFファイルのパスを取得
-        const urlParams = new URLSearchParams(window.location.search);
-        const pdfPath = urlParams.get('file');
+        // PDF表示モジュール
+        const PdfModule = {
+            /**
+             * PDFコンテンツを動的に生成
+             */
+            createPdfContent() {
+                const loginScreen = document.getElementById('loginScreen');
+                const pdfContent = document.getElementById('pdfContent');
+                
+                // ログイン画面を非表示
+                if (loginScreen) {
+                    loginScreen.style.display = 'none';
+                }
+                
+                // URLパラメータからPDFファイルのパスを取得
+                const urlParams = new URLSearchParams(window.location.search);
+                const pdfPath = urlParams.get('file');
+                
+                // PDFコンテンツを生成
+                pdfContent.innerHTML = `
+                    <div class="header">
+                        <h1>PDF表示</h1>
+                        <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+                    </div>
+                    
+                    <div class="pdf-container">
+                        <iframe id="pdfViewer" class="pdf-viewer" src="${pdfPath || ''}" title="PDF Viewer">
+                            <div class="error-message">
+                                <p>PDFファイルを読み込めませんでした。</p>
+                                <p>PDFファイルのパスを確認してください。</p>
+                            </div>
+                        </iframe>
+                    </div>
+                `;
+                
+                if (!pdfPath) {
+                    // PDFファイルが指定されていない場合のメッセージ
+                    const container = pdfContent.querySelector('.pdf-container');
+                    container.innerHTML = `
+                        <div class="error-message">
+                            <h2>PDFファイルが指定されていません</h2>
+                            <p>URLパラメータでPDFファイルを指定してください。</p>
+                            <p>例: index.html?file=sample.pdf</p>
+                        </div>
+                    `;
+                }
+                
+                pdfContent.classList.add('authenticated');
+            }
+        };
 
-        if (pdfPath) {
-            // PDFファイルを表示
-            document.getElementById('pdfViewer').src = pdfPath;
-        } else {
-            // デフォルトのPDFファイル（必要に応じて変更）
-            // document.getElementById('pdfViewer').src = 'sample.pdf';
-            
-            // PDFファイルが指定されていない場合のメッセージ
-            document.getElementById('pdfViewer').style.display = 'none';
-            const container = document.querySelector('.pdf-container');
-            container.innerHTML = `
-                <div class="error-message">
-                    <h2>PDFファイルが指定されていません</h2>
-                    <p>URLパラメータでPDFファイルを指定してください。</p>
-                    <p>例: contents.html?file=sample.pdf</p>
-                </div>
-            `;
-        }
+        // 認証モジュールのログイン処理を拡張
+        const originalHandleLogin = window.AuthModule.handleLogin;
+        window.AuthModule.handleLogin = async function() {
+            await originalHandleLogin.call(this);
+            // 認証成功後、PDFコンテンツを表示
+            if (this.checkAuth()) {
+                PdfModule.createPdfContent();
+            }
+        };
+
+        // 認証モジュールのログアウト処理を拡張
+        const originalHandleLogout = window.AuthModule.handleLogout;
+        window.AuthModule.handleLogout = function() {
+            originalHandleLogout.call(this);
+            // PDFコンテンツをクリア
+            const pdfContent = document.getElementById('pdfContent');
+            if (pdfContent) {
+                pdfContent.innerHTML = '';
+                pdfContent.classList.remove('authenticated');
+            }
+        };
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            // ログインパスワード入力のEnterキー処理
+            const passwordInput = document.getElementById('passwordInput');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        if (window.AuthModule) {
+                            await window.AuthModule.handleLogin();
+                        }
+                    }
+                });
+            }
+
+            // 認証状態をチェック（auth.jsが読み込まれた後）
+            setTimeout(() => {
+                if (window.AuthModule && window.AuthModule.checkAuth()) {
+                    PdfModule.createPdfContent();
+                }
+            }, 100);
+        });
     </script>
 </body>
 </html>
-
