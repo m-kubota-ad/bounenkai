@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>忘年会 クロスBINGO</title>
+    <style>
+        /* 全体のスタイル */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+
+        .rules {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .rules h2 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .rules ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .rules li {
+            margin-bottom: 6px;
+        }
+
+        .rules .notice {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 14px;
+            margin-top: 12px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .rules .notice strong {
+            font-size: 1.05rem;
+        }
+
+        /* BINGOテーブルのスタイル */
+        .bingo-card {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .bingo-card td {
+            width: 33.33%;
+            padding-top: 33.33%;
+            position: relative;
+            border: 3px solid #f7f7f7;
+            background-color: #ffffff;
+            user-select: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .bingo-card td.achieved {
+            background-color: #ff9800;
+        }
+
+        .cell-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 8px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .task {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.4;
+            text-align: center;
+            width: 100%;
+            display: block;
+            padding: 4px 0;
+            flex: 1;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        
+        .achieved .task {
+            color: #fff;
+            text-decoration: line-through;
+        }
+
+        .achieved-name {
+            display: none;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffffff;
+            word-break: break-all;
+            line-height: 1.4;
+            flex-shrink: 0;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            padding: 0 8px;
+            text-align: center;
+        }
+        
+        .achieved .achieved-name {
+            display: block;
+        }
+        
+        .input-placeholder {
+            display: block;
+            font-size: 1.2rem;
+            color: #999;
+            font-weight: normal;
+            margin-top: auto;
+            padding-top: 8px;
+            text-align: center;
+            cursor: pointer;
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+        }
+        
+        .achieved .input-placeholder {
+            display: none;
+        }
+
+        /* モーダルダイアログ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.3s;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            font-size: 1.1rem;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .modal-btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .modal-btn-primary:active {
+            background-color: #2980b9;
+        }
+
+        .modal-btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .modal-btn-secondary:active {
+            background-color: #7f8c8d;
+        }
+
+        /* ログイン画面 */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            font-size: 1.1rem;
+            padding: 12px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .login-btn {
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .login-btn:active {
+            background-color: #21618c;
+        }
+
+        .login-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .bingo-content {
+            display: none;
+        }
+
+        .bingo-content.authenticated {
+            display: block;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .header-actions h1 {
+            margin: 0;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #7f8c8d;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- ログイン画面 -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h2>忘年会 クロスBINGO</h2>
+            <input type="password" id="passwordInput" class="login-input" placeholder="パスワードを入力" autofocus>
+            <button class="login-btn" onclick="handleLogin()">ログイン</button>
+            <div id="loginError" class="login-error">パスワードが正しくありません</div>
+        </div>
+    </div>
+
+    <!-- BINGOカードコンテンツ（認証後に動的に生成） -->
+    <div id="bingoContent" class="bingo-content"></div>
+
+    <!-- お題リストを読み込む -->
+    <script src="tasks.js"></script>
+    <!-- 認証モジュールを読み込む -->
+    <script src="auth.js"></script>
+
+    <script>
+        // ============================================
+        // 定数定義
+        // ============================================
+        const CONFIG = {
+            TASKS_FILE: 'tasks.js',
+            CENTER_TASK: 'アダストリアブランドのアイテムを身に着けている',
+            BINGO_SIZE: 3,
+            REQUIRED_TASKS: 8
+        };
+
+        const SELECTORS = {
+            loginScreen: '#loginScreen',
+            bingoContent: '#bingoContent',
+            passwordInput: '#passwordInput',
+            loginError: '#loginError',
+            inputModal: '#inputModal',
+            modalTask: '#modalTask',
+            modalCompanyInput: '#modalCompanyInput',
+            modalNameInput: '#modalNameInput',
+            bingoBody: '#bingo-body'
+        };
+
+        // ============================================
+        // BINGOカードモジュール
+        // ============================================
+        window.BingoModule = {
+            tasks: [],
+            currentCell: null,
+
+            /**
+             * BINGOコンテンツを動的に生成
+             */
+            createBingoContent() {
+                const loginScreen = document.querySelector(SELECTORS.loginScreen);
+                const bingoContent = document.querySelector(SELECTORS.bingoContent);
+                
+                // ログイン画面を非表示
+                if (loginScreen) {
+                    loginScreen.style.display = 'none';
+                }
+                
+                // BINGOコンテンツを生成
+                bingoContent.innerHTML = `
+                    <div class="container">
+                        <div class="header-actions">
+                            <h1>忘年会 クロスBINGO</h1>
+                            <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+                        </div>
+                        
+                        <div class="rules">
+                            <h2>🎮 ルール説明</h2>
+                            <ul>
+                                <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
+                                <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
+                                <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
+                            </ul>
+                            <div class="notice">
+                                <strong>⚠️ ご注意</strong><br>
+                                ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+                            </div>
+                        </div>
+                        
+                        <table class="bingo-card">
+                            <tbody id="bingo-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- モーダルダイアログ -->
+                    <div id="inputModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="modalTask"></h3>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
+                                <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
+                            </div>
+                            <div class="modal-buttons">
+                                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
+                                <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                bingoContent.classList.add('authenticated');
+            },
+
+            /**
+             * JavaScriptファイルからお題リストを読み込む
+             * @returns {Promise<string[]>} お題の配列
+             */
+            async loadTasks() {
+                return new Promise((resolve, reject) => {
+                    // BINGO_TASKSが読み込まれるまで待機する関数
+                    const checkAndLoad = (retries = 50) => {
+                        if (typeof BINGO_TASKS !== 'undefined' && Array.isArray(BINGO_TASKS)) {
+                            if (BINGO_TASKS.length === 0) {
+                                reject(new Error('お題リストが空です'));
+                                return;
+                            }
+                            console.log(`お題リストから${BINGO_TASKS.length}個のお題を読み込みました`);
+                            resolve(BINGO_TASKS);
+                            return;
+                        }
+                        
+                        // リトライ回数を超えた場合はエラー
+                        if (retries <= 0) {
+                            reject(new Error('お題リスト（BINGO_TASKS）が読み込まれませんでした。tasks.jsファイルが正しく読み込まれているか確認してください。'));
+                            return;
+                        }
+                        
+                        // 100ms待ってから再試行
+                        setTimeout(() => checkAndLoad(retries - 1), 100);
+                    };
+                    
+                    // 即座にチェックして、なければ待機
+                    checkAndLoad();
+                });
+            },
+
+            /**
+             * 配列をシャッフル（Fisher-Yatesアルゴリズム）
+             * @param {Array} array - シャッフルする配列
+             * @returns {Array} シャッフルされた配列
+             */
+            shuffle(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            },
+
+            /**
+             * テキストをエスケープ（XSS対策）
+             * @param {string} text - エスケープするテキスト
+             * @returns {string} エスケープされたテキスト
+             */
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            },
+
+            /**
+             * BINGOカードを生成
+             */
+            createBingoCard() {
+                const tbody = document.querySelector(SELECTORS.bingoBody);
+                tbody.innerHTML = '';
+                
+                // 中央マス用のお題を除外
+                const tasksWithoutCenter = this.tasks.filter(task => {
+                    const cleanTask = task.replace(/<br>/gi, '').trim();
+                    return cleanTask !== CONFIG.CENTER_TASK;
+                });
+                
+                if (tasksWithoutCenter.length < CONFIG.REQUIRED_TASKS) {
+                    console.warn(`お題が${CONFIG.REQUIRED_TASKS}個未満です。${CONFIG.REQUIRED_TASKS}個以上用意してください。`);
+                }
+                
+                const shuffledTasks = this.shuffle(tasksWithoutCenter);
+                let taskIndex = 0;
+                
+                for (let i = 0; i < CONFIG.BINGO_SIZE; i++) {
+                    const tr = document.createElement('tr');
+                    for (let j = 0; j < CONFIG.BINGO_SIZE; j++) {
+                        const td = document.createElement('td');
+                        const isCenter = i === 1 && j === 1;
+                        const taskText = isCenter 
+                            ? CONFIG.CENTER_TASK 
+                            : (taskIndex < shuffledTasks.length ? shuffledTasks[taskIndex++] : 'お題が足りません');
+                        
+                        const taskTextEscaped = this.escapeHtml(taskText);
+                        const taskTextForAria = taskText.replace(/<br>/g, ' ');
+                        
+                        // セルコンテンツを作成
+                        const cellContent = document.createElement('div');
+                        cellContent.className = 'cell-content';
+                        
+                        const taskDiv = document.createElement('div');
+                        taskDiv.className = 'task';
+                        taskDiv.textContent = taskText.replace(/<br>/g, ' ');
+                        cellContent.appendChild(taskDiv);
+                        
+                        const placeholderDiv = document.createElement('div');
+                        placeholderDiv.className = 'input-placeholder';
+                        placeholderDiv.textContent = 'タップして入力';
+                        cellContent.appendChild(placeholderDiv);
+                        
+                        const nameDiv = document.createElement('div');
+                        nameDiv.className = 'achieved-name';
+                        cellContent.appendChild(nameDiv);
+                        
+                        td.appendChild(cellContent);
+                        td.setAttribute('data-task', taskTextForAria);
+                        td.setAttribute('data-task-html', taskText);
+                        tr.appendChild(td);
+                    }
+                    tbody.appendChild(tr);
+                }
+            },
+
+            /**
+             * モーダルを開く
+             * @param {HTMLElement} cell - クリックされたセル
+             */
+            openModal(cell) {
+                this.currentCell = cell;
+                const taskText = cell.getAttribute('data-task');
+                const modal = document.querySelector(SELECTORS.inputModal);
+                const modalTask = document.querySelector(SELECTORS.modalTask);
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
+                
+                modalTask.textContent = taskText;
+                
+                // 既に入力済みの場合は既存の値を表示
+                const nameDisplay = cell.querySelector('.achieved-name');
+                if (cell.classList.contains('achieved') && nameDisplay.textContent) {
+                    const currentText = nameDisplay.textContent;
+                    const parts = currentText.split('\n');
+                    if (parts.length >= 2) {
+                        modalCompanyInput.value = parts[0].trim();
+                        modalNameInput.value = parts[1].trim();
+                    } else {
+                        const spaceIndex = currentText.indexOf(' ');
+                        if (spaceIndex > 0) {
+                            modalCompanyInput.value = currentText.substring(0, spaceIndex).trim();
+                            modalNameInput.value = currentText.substring(spaceIndex + 1).trim();
+                        } else {
+                            modalCompanyInput.value = '';
+                            modalNameInput.value = currentText.trim();
+                        }
+                    }
+                } else {
+                    modalCompanyInput.value = '';
+                    modalNameInput.value = '';
+                }
+                
+                modal.classList.add('active');
+                setTimeout(() => modalCompanyInput.focus(), 100);
+            },
+
+            /**
+             * モーダルを閉じる
+             */
+            closeModal() {
+                const modal = document.querySelector(SELECTORS.inputModal);
+                modal.classList.remove('active');
+                this.currentCell = null;
+            },
+
+            /**
+             * モーダルから送信
+             */
+            submitModal() {
+                if (!this.currentCell) return;
+                
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
+                const company = modalCompanyInput.value.trim();
+                const name = modalNameInput.value.trim();
+                
+                if (company === '' || name === '') {
+                    alert('会社名と名前の両方を入力してください。');
+                    return;
+                }
+                
+                const nameDisplay = this.currentCell.querySelector('.achieved-name');
+                // テキストノードとして設定（XSS対策）
+                nameDisplay.textContent = `${company}\n${name}`;
+                nameDisplay.style.whiteSpace = 'pre-line';
+                this.currentCell.classList.add('achieved');
+                this.closeModal();
+            },
+
+            /**
+             * イベントリスナーを設定
+             */
+            setupEventListeners() {
+                const bingoBody = document.querySelector(SELECTORS.bingoBody);
+                const modal = document.querySelector(SELECTORS.inputModal);
+                const modalCompanyInput = document.querySelector(SELECTORS.modalCompanyInput);
+                const modalNameInput = document.querySelector(SELECTORS.modalNameInput);
+                
+                // セルクリック
+                bingoBody.addEventListener('click', (e) => {
+                    const cell = e.target.closest('td');
+                    if (cell) {
+                        this.openModal(cell);
+                    }
+                });
+                
+                // モーダル背景クリック
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        this.closeModal();
+                    }
+                });
+                
+                // Enterキー処理
+                modalCompanyInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        modalNameInput.focus();
+                    }
+                });
+                
+                modalNameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.submitModal();
+                    }
+                });
+            },
+
+            /**
+             * BINGOカードを初期化
+             */
+            async init() {
+                try {
+                    this.tasks = await this.loadTasks();
+                    this.createBingoCard();
+                    this.setupEventListeners();
+                } catch (error) {
+                    console.error('BINGOカードの初期化に失敗しました:', error);
+                    alert(`お題リストの読み込みに失敗しました。\n\nエラー: ${error.message}\n\nページを再読み込みしてください。`);
+                }
+            }
+        };
+
+        // ============================================
+        // グローバル関数（HTMLのonclick属性用）
+        // ============================================
+        window.closeModal = () => window.BingoModule.closeModal();
+        window.submitModal = () => window.BingoModule.submitModal();
+
+        // ============================================
+        // 初期化
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // ログインパスワード入力のEnterキー処理
+            const passwordInput = document.querySelector(SELECTORS.passwordInput);
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', async (e) => {
+                    if (e.key === 'Enter') {
+                        if (window.AuthModule) {
+                            await window.AuthModule.handleLogin();
+                        }
+                    }
+                });
+            }
+
+            // 認証状態をチェック（auth.jsが読み込まれた後）
+            setTimeout(() => {
+                if (window.AuthModule && window.AuthModule.checkAuth()) {
+                    window.BingoModule.createBingoContent();
+                    window.BingoModule.init();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
