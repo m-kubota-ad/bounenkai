@@ -64,7 +64,9 @@
             const password = passwordInput.value.trim();
 
             if (!password) {
-                loginError.classList.add('show');
+                if (loginError) {
+                    loginError.classList.add('show');
+                }
                 return;
             }
 
@@ -72,9 +74,13 @@
                 const passwordHash = await this.hashWithSalt(password);
                 if (passwordHash === AUTH_CONFIG.PASSWORD_HASH) {
                     this.setAuth(true);
+                    // 各モジュールの初期化は各ページで処理
                     if (window.BingoModule) {
                         window.BingoModule.createBingoContent();
                         await window.BingoModule.init();
+                    }
+                    if (window.PdfModule) {
+                        window.PdfModule.createPdfContent();
                     }
                 } else {
                     this.showLoginError(loginError, passwordInput);
@@ -103,12 +109,25 @@
          */
         handleLogout() {
             this.setAuth(false);
-            document.querySelector('#loginScreen').style.display = 'flex';
+            const loginScreen = document.querySelector('#loginScreen');
+            if (loginScreen) {
+                loginScreen.style.display = 'flex';
+            }
+            
+            // BINGOコンテンツをクリア
             const bingoContent = document.querySelector('#bingoContent');
             if (bingoContent) {
                 bingoContent.classList.remove('authenticated');
                 bingoContent.innerHTML = '';
             }
+            
+            // PDFコンテンツをクリア
+            const pdfContent = document.querySelector('#pdfContent');
+            if (pdfContent) {
+                pdfContent.classList.remove('authenticated');
+                pdfContent.innerHTML = '';
+            }
+            
             const passwordInput = document.querySelector('#passwordInput');
             if (passwordInput) {
                 passwordInput.value = '';
