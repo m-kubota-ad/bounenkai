@@ -404,66 +404,23 @@
         </div>
     </div>
 
-    <!-- BINGOカードコンテンツ -->
-    <div id="bingoContent" class="bingo-content">
-        <div class="container">
-            <div class="header-actions">
-                <h1>忘年会 クロスBINGO</h1>
-                <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
-            </div>
-            
-            <div class="rules">
-                <h2>🎮 ルール説明</h2>
-                <ul>
-                    <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
-                    <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
-                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
-                </ul>
-                <div class="notice">
-                    <strong>⚠️ ご注意</strong><br>
-                    ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
-                </div>
-            </div>
-            
-            <table class="bingo-card">
-                <tbody id="bingo-body"></tbody>
-            </table>
-        </div>
-
-        <!-- モーダルダイアログ -->
-        <div id="inputModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="modalTask"></h3>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
-                    <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
-                </div>
-                <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
-                    <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- BINGOカードコンテンツ（認証後に動的に生成） -->
+    <div id="bingoContent" class="bingo-content"></div>
 
     <!-- お題リストを読み込む -->
     <script src="tasks.js"></script>
+    <!-- 認証モジュールを読み込む -->
+    <script src="auth.js"></script>
 
     <script>
         // ============================================
         // 定数定義
         // ============================================
         const CONFIG = {
-            AUTH_KEY: 'bingo_authenticated',
-            SALT: 'bingo_salt_2024_adastria',
-            PASSWORD_HASH: '7d9d9c98d8f339e664f077839bfc5dda8a31152511293c5d7b938cea036d4a68',
             TASKS_FILE: 'tasks.js',
             CENTER_TASK: 'アダストリアブランドのアイテムを身に着けている',
             BINGO_SIZE: 3,
-            REQUIRED_TASKS: 8,
-            ERROR_DISPLAY_TIME: 3000
+            REQUIRED_TASKS: 8
         };
 
         const SELECTORS = {
@@ -479,118 +436,69 @@
         };
 
         // ============================================
-        // 認証モジュール
-        // ============================================
-        const AuthModule = {
-            /**
-             * SHA-256ハッシュを計算
-             * @param {string} message - ハッシュ化する文字列
-             * @returns {Promise<string>} ハッシュ値（16進数）
-             */
-            async sha256(message) {
-                const msgBuffer = new TextEncoder().encode(message);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            },
-
-            /**
-             * ソルト付きハッシュを計算
-             * @param {string} password - パスワード
-             * @returns {Promise<string>} ハッシュ値
-             */
-            async hashWithSalt(password) {
-                return await this.sha256(CONFIG.SALT + password);
-            },
-
-            /**
-             * 認証状態を確認
-             * @returns {boolean} 認証済みかどうか
-             */
-            checkAuth() {
-                return localStorage.getItem(CONFIG.AUTH_KEY) === 'true';
-            },
-
-            /**
-             * 認証状態を保存
-             * @param {boolean} authenticated - 認証状態
-             */
-            setAuth(authenticated) {
-                if (authenticated) {
-                    localStorage.setItem(CONFIG.AUTH_KEY, 'true');
-                } else {
-                    localStorage.removeItem(CONFIG.AUTH_KEY);
-                }
-            },
-
-            /**
-             * ログイン処理
-             */
-            async handleLogin() {
-                const passwordInput = document.querySelector(SELECTORS.passwordInput);
-                const loginError = document.querySelector(SELECTORS.loginError);
-                const password = passwordInput.value.trim();
-
-                if (!password) {
-                    loginError.classList.add('show');
-                    return;
-                }
-
-                try {
-                    const passwordHash = await this.hashWithSalt(password);
-                    if (passwordHash === CONFIG.PASSWORD_HASH) {
-                        this.setAuth(true);
-                        BingoModule.showBingoContent();
-                        // 初回ログイン時もBINGOカードを初期化
-                        await BingoModule.init();
-                    } else {
-                        this.showLoginError(loginError, passwordInput);
-                    }
-                } catch (error) {
-                    console.error('ログインエラー:', error);
-                    this.showLoginError(loginError, passwordInput);
-                }
-            },
-
-            /**
-             * ログインエラーを表示
-             * @param {HTMLElement} loginError - エラー表示要素
-             * @param {HTMLElement} passwordInput - パスワード入力要素
-             */
-            showLoginError(loginError, passwordInput) {
-                loginError.classList.add('show');
-                passwordInput.value = '';
-                setTimeout(() => {
-                    loginError.classList.remove('show');
-                }, CONFIG.ERROR_DISPLAY_TIME);
-            },
-
-            /**
-             * ログアウト処理
-             */
-            handleLogout() {
-                this.setAuth(false);
-                document.querySelector(SELECTORS.loginScreen).style.display = 'flex';
-                document.querySelector(SELECTORS.bingoContent).classList.remove('authenticated');
-                const passwordInput = document.querySelector(SELECTORS.passwordInput);
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
-        };
-
-        // ============================================
         // BINGOカードモジュール
         // ============================================
-        const BingoModule = {
+        window.BingoModule = {
             tasks: [],
             currentCell: null,
 
             /**
-             * BINGOコンテンツを表示
+             * BINGOコンテンツを動的に生成
              */
-            showBingoContent() {
-                document.querySelector(SELECTORS.loginScreen).style.display = 'none';
-                document.querySelector(SELECTORS.bingoContent).classList.add('authenticated');
+            createBingoContent() {
+                const loginScreen = document.querySelector(SELECTORS.loginScreen);
+                const bingoContent = document.querySelector(SELECTORS.bingoContent);
+                
+                // ログイン画面を非表示
+                if (loginScreen) {
+                    loginScreen.style.display = 'none';
+                }
+                
+                // BINGOコンテンツを生成
+                bingoContent.innerHTML = `
+                    <div class="container">
+                        <div class="header-actions">
+                            <h1>忘年会 クロスBINGO</h1>
+                            <button class="logout-btn" onclick="handleLogout()">ログアウト</button>
+                        </div>
+                        
+                        <div class="rules">
+                            <h2>🎮 ルール説明</h2>
+                            <ul>
+                                <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
+                                <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
+                                <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
+                            </ul>
+                            <div class="notice">
+                                <strong>⚠️ ご注意</strong><br>
+                                ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+                            </div>
+                        </div>
+                        
+                        <table class="bingo-card">
+                            <tbody id="bingo-body"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- モーダルダイアログ -->
+                    <div id="inputModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 id="modalTask"></h3>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" id="modalCompanyInput" class="modal-input" placeholder="会社名" autofocus>
+                                <input type="text" id="modalNameInput" class="modal-input" placeholder="名前">
+                            </div>
+                            <div class="modal-buttons">
+                                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">キャンセル</button>
+                                <button class="modal-btn modal-btn-primary" onclick="submitModal()">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                bingoContent.classList.add('authenticated');
             },
 
             /**
@@ -840,10 +748,8 @@
         // ============================================
         // グローバル関数（HTMLのonclick属性用）
         // ============================================
-        window.handleLogin = () => AuthModule.handleLogin();
-        window.handleLogout = () => AuthModule.handleLogout();
-        window.closeModal = () => BingoModule.closeModal();
-        window.submitModal = () => BingoModule.submitModal();
+        window.closeModal = () => window.BingoModule.closeModal();
+        window.submitModal = () => window.BingoModule.submitModal();
 
         // ============================================
         // 初期化
@@ -854,16 +760,20 @@
             if (passwordInput) {
                 passwordInput.addEventListener('keypress', async (e) => {
                     if (e.key === 'Enter') {
-                        await AuthModule.handleLogin();
+                        if (window.AuthModule) {
+                            await window.AuthModule.handleLogin();
+                        }
                     }
                 });
             }
 
-            // 認証状態をチェック
-            if (AuthModule.checkAuth()) {
-                BingoModule.showBingoContent();
-                BingoModule.init();
-            }
+            // 認証状態をチェック（auth.jsが読み込まれた後）
+            setTimeout(() => {
+                if (window.AuthModule && window.AuthModule.checkAuth()) {
+                    window.BingoModule.createBingoContent();
+                    window.BingoModule.init();
+                }
+            }, 100);
         });
     </script>
 </body>
