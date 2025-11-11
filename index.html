@@ -541,6 +541,8 @@
                     if (passwordHash === CONFIG.PASSWORD_HASH) {
                         this.setAuth(true);
                         BingoModule.showBingoContent();
+                        // 初回ログイン時もBINGOカードを初期化
+                        await BingoModule.init();
                     } else {
                         this.showLoginError(loginError, passwordInput);
                     }
