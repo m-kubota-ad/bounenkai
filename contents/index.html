@@ -192,7 +192,7 @@
 
     <script>
         // PDF表示モジュール
-        const PdfModule = {
+        window.PdfModule = {
             /**
              * PDFコンテンツを動的に生成
              */
@@ -242,27 +242,6 @@
             }
         };
 
-        // 認証モジュールのログイン処理を拡張
-        const originalHandleLogin = window.AuthModule.handleLogin;
-        window.AuthModule.handleLogin = async function() {
-            await originalHandleLogin.call(this);
-            // 認証成功後、PDFコンテンツを表示
-            if (this.checkAuth()) {
-                PdfModule.createPdfContent();
-            }
-        };
-
-        // 認証モジュールのログアウト処理を拡張
-        const originalHandleLogout = window.AuthModule.handleLogout;
-        window.AuthModule.handleLogout = function() {
-            originalHandleLogout.call(this);
-            // PDFコンテンツをクリア
-            const pdfContent = document.getElementById('pdfContent');
-            if (pdfContent) {
-                pdfContent.innerHTML = '';
-                pdfContent.classList.remove('authenticated');
-            }
-        };
 
         // 初期化
         document.addEventListener('DOMContentLoaded', () => {
@@ -281,7 +260,7 @@
             // 認証状態をチェック（auth.jsが読み込まれた後）
             setTimeout(() => {
                 if (window.AuthModule && window.AuthModule.checkAuth()) {
-                    PdfModule.createPdfContent();
+                    window.PdfModule.createPdfContent();
                 }
             }, 100);
         });
