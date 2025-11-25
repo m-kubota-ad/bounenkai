@@ -322,39 +322,51 @@
 
         /* 印刷用スタイル */
         @media print {
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
             body {
                 background: white;
                 margin: 0;
                 padding: 0;
+                width: 100%;
+                height: 100%;
             }
 
             .slides-container {
                 width: 100%;
                 height: auto;
+                margin: 0;
+                padding: 0;
             }
 
             .slide {
                 width: 100%;
-                height: 100vh;
-                min-height: 100vh;
-                max-height: 100vh;
+                height: 100%;
+                min-height: 100%;
+                max-height: 100%;
                 margin: 0;
-                padding: 50px;
+                padding: 30px 40px;
                 box-shadow: none;
                 page-break-after: always;
+                page-break-before: always;
                 page-break-inside: avoid;
                 position: relative;
                 display: flex !important;
                 overflow: hidden;
+                box-sizing: border-box;
             }
 
             /* 印刷時のフォントサイズ調整 */
             .slide-title h1 {
-                font-size: 80px;
+                font-size: 64px;
+                margin-bottom: 30px;
             }
 
             .slide-title .subtitle {
-                font-size: 36px;
+                font-size: 32px;
             }
 
             .slide-purpose h1,
@@ -362,39 +374,111 @@
             .slide-join h1,
             .slide-playing h1,
             .slide-result h1 {
-                font-size: 56px;
+                font-size: 48px;
+                margin-bottom: 40px;
             }
 
-            .purpose-text p,
-            .rule-text p,
-            .join-step p {
-                font-size: 24px;
+            .purpose-content {
+                gap: 40px;
             }
 
-            .purpose-text h2,
+            .purpose-item {
+                min-width: 300px;
+                max-width: 400px;
+                gap: 20px;
+            }
+
+            .purpose-icon {
+                font-size: 80px;
+            }
+
+            .purpose-text h2 {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+
+            .purpose-text p {
+                font-size: 20px;
+            }
+
+            .rules-content {
+                max-width: 1200px;
+            }
+
+            .rule-item {
+                gap: 30px;
+                margin-bottom: 35px;
+            }
+
+            .rule-number {
+                width: 60px;
+                height: 60px;
+                font-size: 36px;
+                flex: 0 0 60px;
+            }
+
             .rule-text h2 {
-                font-size: 32px;
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .rule-text p {
+                font-size: 20px;
             }
 
             .slide-rules .notice {
-                font-size: 22px;
+                font-size: 18px;
+                margin-top: 30px;
+                padding: 15px;
+            }
+
+            .join-content {
+                gap: 50px;
+            }
+
+            .join-steps {
+                gap: 20px;
+            }
+
+            .step-number {
+                width: 60px;
+                height: 60px;
+                font-size: 36px;
+            }
+
+            .join-step p {
+                font-size: 20px;
+            }
+
+            .join-arrow {
+                font-size: 36px;
             }
 
             .slide-playing .message,
             .slide-result .message {
-                font-size: 36px;
+                font-size: 32px;
+                margin-bottom: 50px;
             }
 
             .slide-result .congrats {
-                font-size: 56px;
+                font-size: 48px;
+                margin-bottom: 40px;
+            }
+
+            .qr-code {
+                width: 250px;
+                height: 250px;
+                padding: 15px;
             }
 
             .qr-label {
-                font-size: 24px;
+                font-size: 20px;
+                margin-bottom: 15px;
             }
 
             .game-url {
-                font-size: 18px;
+                font-size: 16px;
+                margin-top: 15px;
             }
 
             @page {
