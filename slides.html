@@ -65,62 +65,6 @@
             text-align: center;
         }
 
-        /* 概要・ルールスライド */
-        .slide-overview {
-            text-align: left;
-        }
-
-        .slide-overview h1 {
-            font-size: 72px;
-            color: #ff6b35;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-
-        .slide-overview h2 {
-            font-size: 48px;
-            color: #333;
-            margin: 40px 0 20px 0;
-        }
-
-        .slide-overview .content {
-            width: 100%;
-            display: flex;
-            gap: 60px;
-            align-items: flex-start;
-        }
-
-        .slide-overview .left {
-            flex: 1;
-        }
-
-        .slide-overview .right {
-            flex: 0 0 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .slide-overview ul {
-            font-size: 36px;
-            line-height: 1.8;
-            color: #333;
-            margin-left: 40px;
-        }
-
-        .slide-overview li {
-            margin-bottom: 20px;
-        }
-
-        .slide-overview .notice {
-            font-size: 28px;
-            color: #d32f2f;
-            margin-top: 30px;
-            padding: 20px;
-            background: #ffebee;
-            border-left: 4px solid #d32f2f;
-        }
-
         .qr-container {
             margin-top: 40px;
         }
@@ -149,50 +93,182 @@
             word-break: break-all;
         }
 
-        /* デモスライド */
-        .slide-demo h1 {
-            font-size: 72px;
-            color: #ff6b35;
-            margin-bottom: 40px;
+        /* 目的スライド */
+        .slide-purpose {
             text-align: center;
         }
 
-        .slide-demo .demo-content {
-            width: 100%;
+        .slide-purpose h1 {
+            font-size: 72px;
+            color: #ff6b35;
+            margin-bottom: 80px;
+        }
+
+        .purpose-content {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .purpose-item {
+            flex: 1;
+            min-width: 400px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 40px;
+            gap: 30px;
         }
 
-        .demo-image {
-            width: 800px;
-            height: 600px;
-            background: #f5f5f5;
-            border: 3px solid #ddd;
-            border-radius: 12px;
+        .purpose-icon {
+            font-size: 120px;
+            line-height: 1;
+        }
+
+        .purpose-text {
+            text-align: center;
+        }
+
+        .purpose-text h2 {
+            font-size: 42px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .purpose-text p {
+            font-size: 32px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* ルールスライド */
+        .slide-rules {
+            text-align: left;
+        }
+
+        .slide-rules h1 {
+            font-size: 72px;
+            color: #ff6b35;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .rules-content {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .rule-item {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-bottom: 50px;
+        }
+
+        .rule-number {
+            flex: 0 0 80px;
+            width: 80px;
+            height: 80px;
+            background: #ff6b35;
+            color: white;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            color: #999;
+            font-size: 48px;
+            font-weight: bold;
         }
 
-        .demo-steps {
-            font-size: 36px;
-            line-height: 1.8;
+        .rule-text {
+            flex: 1;
+        }
+
+        .rule-text h2 {
+            font-size: 42px;
             color: #333;
+            margin-bottom: 15px;
+        }
+
+        .rule-text p {
+            font-size: 32px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .slide-rules .notice {
+            font-size: 28px;
+            color: #d32f2f;
+            margin-top: 50px;
+            padding: 25px;
+            background: #ffebee;
+            border-left: 4px solid #d32f2f;
             text-align: left;
-            width: 100%;
-            max-width: 1200px;
         }
 
-        .demo-steps ol {
-            margin-left: 40px;
+        /* 参加方法スライド */
+        .slide-join {
+            text-align: center;
         }
 
-        .demo-steps li {
-            margin-bottom: 20px;
+        .slide-join h1 {
+            font-size: 72px;
+            color: #ff6b35;
+            margin-bottom: 60px;
+        }
+
+        .join-content {
+            display: flex;
+            gap: 80px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .join-steps {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .join-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: #ff6b35;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .join-step p {
+            font-size: 28px;
+            color: #333;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .join-arrow {
+            font-size: 48px;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        .slide-join .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         /* 進行中スライド */
@@ -281,23 +357,26 @@
                 font-size: 36px;
             }
 
-            .slide-overview h1,
-            .slide-demo h1,
+            .slide-purpose h1,
+            .slide-rules h1,
+            .slide-join h1,
             .slide-playing h1,
             .slide-result h1 {
                 font-size: 56px;
             }
 
-            .slide-overview h2 {
-                font-size: 36px;
+            .purpose-text p,
+            .rule-text p,
+            .join-step p {
+                font-size: 24px;
             }
 
-            .slide-overview ul,
-            .demo-steps {
-                font-size: 28px;
+            .purpose-text h2,
+            .rule-text h2 {
+                font-size: 32px;
             }
 
-            .slide-overview .notice {
+            .slide-rules .notice {
                 font-size: 22px;
             }
 
@@ -382,56 +461,97 @@
         <div class="subtitle">クロスビンゴ</div>
     </div>
 
-    <!-- スライド2: ゲーム概要・ルール説明・QRコード -->
-    <div class="slide slide-overview">
-        <h1>ゲーム概要</h1>
-        <div class="content">
-            <div class="left">
-                <h2>🎮 ルール説明</h2>
-                <ul>
-                    <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
-                    <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
-                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
-                </ul>
-                <div class="notice">
-                    <strong>⚠️ ご注意</strong><br>
-                    ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+    <!-- スライド2: ゲームの目的・楽しさ -->
+    <div class="slide slide-purpose">
+        <h1>🎯 このゲームの目的</h1>
+        <div class="purpose-content">
+            <div class="purpose-item">
+                <div class="purpose-icon">🤝</div>
+                <div class="purpose-text">
+                    <h2>異なる会社の方々と交流</h2>
+                    <p>ご自身の所属の会社以外の方と<br>自然に会話が生まれます</p>
                 </div>
             </div>
-            <div class="right">
-                <div class="qr-container">
-                    <div class="qr-label">ゲームに参加する</div>
-                    <div id="qr-overview" class="qr-code"></div>
-                    <div class="game-url" id="url-overview"></div>
+            <div class="purpose-item">
+                <div class="purpose-icon">🎲</div>
+                <div class="purpose-text">
+                    <h2>楽しく忘年会を盛り上げる</h2>
+                    <p>3×3のビンゴカードで<br>縦・横・斜めのいずれか1列を目指します</p>
+                </div>
+            </div>
+            <div class="purpose-item">
+                <div class="purpose-icon">🎁</div>
+                <div class="purpose-text">
+                    <h2>BINGO達成で景品獲得</h2>
+                    <p>最初にBINGOを達成した方に<br>素敵な景品をプレゼント！</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- スライド3: デモ -->
-    <div class="slide slide-demo">
-        <h1>デモ</h1>
-        <div class="demo-content">
-            <div class="demo-image">
-                📱 スマートフォンで<br>QRコードをスキャン
+    <!-- スライド3: ルール説明 -->
+    <div class="slide slide-rules">
+        <h1>🎮 ルール説明</h1>
+        <div class="rules-content">
+            <div class="rule-item">
+                <div class="rule-number">1</div>
+                <div class="rule-text">
+                    <h2>お題を達成した人を探す</h2>
+                    <p>各マスに表示されたお題を達成した人を見つけましょう<br><strong>※ご自身の所属の会社以外の方限定です</strong></p>
+                </div>
             </div>
-            <div class="demo-steps">
-                <ol>
-                    <li>QRコードをスキャンしてゲームページにアクセス</li>
-                    <li>パスワードを入力してログイン</li>
-                    <li>3×3のビンゴカードが表示されます</li>
-                    <li>各マスに表示されたお題を達成した人を見つけて、マスをタップ</li>
-                    <li>会社名と名前を入力してOKボタンを押す</li>
-                    <li>マスがオレンジ色に変わります</li>
-                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」</li>
-                </ol>
+            <div class="rule-item">
+                <div class="rule-number">2</div>
+                <div class="rule-text">
+                    <h2>マスをタップして入力</h2>
+                    <p>達成した人の会社名と名前を入力すると、<br>マスがオレンジ色に変わります</p>
+                </div>
+            </div>
+            <div class="rule-item">
+                <div class="rule-number">3</div>
+                <div class="rule-text">
+                    <h2>BINGOを目指す</h2>
+                    <p>縦・横・斜めのいずれか1列が揃ったら<br><strong>「BINGO！」</strong>と大きな声で叫んでください</p>
+                </div>
+            </div>
+            <div class="notice">
+                <strong>⚠️ ご注意</strong><br>
+                ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
             </div>
         </div>
     </div>
 
-    <!-- スライド4: ゲーム進行中・QRコード -->
+    <!-- スライド4: 参加方法・QRコード -->
+    <div class="slide slide-join">
+        <h1>📱 ゲームに参加する</h1>
+        <div class="join-content">
+            <div class="join-steps">
+                <div class="join-step">
+                    <div class="step-number">1</div>
+                    <p>スマートフォンで<br>QRコードをスキャン</p>
+                </div>
+                <div class="join-arrow">→</div>
+                <div class="join-step">
+                    <div class="step-number">2</div>
+                    <p>パスワードを<br>入力してログイン</p>
+                </div>
+                <div class="join-arrow">→</div>
+                <div class="join-step">
+                    <div class="step-number">3</div>
+                    <p>3×3のビンゴカードが<br>表示されます</p>
+                </div>
+            </div>
+            <div class="qr-section">
+                <div class="qr-label">ゲームに参加する</div>
+                <div id="qr-join" class="qr-code"></div>
+                <div class="game-url" id="url-join"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド5: ゲーム進行中・QRコード -->
     <div class="slide slide-playing">
-        <h1>ゲーム進行中</h1>
+        <h1>🎮 ゲーム進行中</h1>
         <div class="message">
             各マスに表示されたお題を達成した人を探して、<br>
             マスをタップして入力してください！
@@ -443,7 +563,7 @@
         </div>
     </div>
 
-    <!-- スライド5: 結果 -->
+    <!-- スライド6: 結果 -->
     <div class="slide slide-result">
         <h1>結果発表</h1>
         <div class="congrats">🎉 BINGO達成おめでとうございます！ 🎉</div>
@@ -456,7 +576,7 @@
 
     <!-- スライドカウンター -->
     <div class="slide-counter">
-        <span id="currentSlide">1</span> / <span id="totalSlides">5</span>
+        <span id="currentSlide">1</span> / <span id="totalSlides">6</span>
     </div>
 
     <!-- ナビゲーションボタン -->
@@ -563,7 +683,7 @@
             showSlide(0);
             
             // QRコードを生成
-            generateQRCode('qr-overview', gameUrl, 'url-overview');
+            generateQRCode('qr-join', gameUrl, 'url-join');
             generateQRCode('qr-playing', gameUrl, 'url-playing');
         });
     </script>
