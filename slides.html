@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DX忘年会2025 クロスビンゴ - スライド</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            background: #f0f0f0;
+        }
+
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            background: white;
+            margin: 20px auto;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            page-break-after: always;
+        }
+
+        /* タイトルスライド */
+        .slide-title {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            color: white;
+        }
+
+        .slide-title h1 {
+            font-size: 120px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-title .subtitle {
+            font-size: 48px;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        /* 概要・ルールスライド */
+        .slide-overview {
+            text-align: left;
+        }
+
+        .slide-overview h1 {
+            font-size: 72px;
+            color: #ff6b35;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .slide-overview h2 {
+            font-size: 48px;
+            color: #333;
+            margin: 40px 0 20px 0;
+        }
+
+        .slide-overview .content {
+            width: 100%;
+            display: flex;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .slide-overview .left {
+            flex: 1;
+        }
+
+        .slide-overview .right {
+            flex: 0 0 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .slide-overview ul {
+            font-size: 36px;
+            line-height: 1.8;
+            color: #333;
+            margin-left: 40px;
+        }
+
+        .slide-overview li {
+            margin-bottom: 20px;
+        }
+
+        .slide-overview .notice {
+            font-size: 28px;
+            color: #d32f2f;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ffebee;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .qr-container {
+            margin-top: 40px;
+        }
+
+        .qr-label {
+            font-size: 32px;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 300px;
+            height: 300px;
+            background: white;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .game-url {
+            font-size: 24px;
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        /* デモスライド */
+        .slide-demo h1 {
+            font-size: 72px;
+            color: #ff6b35;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .slide-demo .demo-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .demo-image {
+            width: 800px;
+            height: 600px;
+            background: #f5f5f5;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #999;
+        }
+
+        .demo-steps {
+            font-size: 36px;
+            line-height: 1.8;
+            color: #333;
+            text-align: left;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .demo-steps ol {
+            margin-left: 40px;
+        }
+
+        .demo-steps li {
+            margin-bottom: 20px;
+        }
+
+        /* 進行中スライド */
+        .slide-playing {
+            text-align: center;
+        }
+
+        .slide-playing h1 {
+            font-size: 96px;
+            color: #ff6b35;
+            margin-bottom: 60px;
+        }
+
+        .slide-playing .message {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 80px;
+            line-height: 1.6;
+        }
+
+        .slide-playing .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 結果スライド */
+        .slide-result {
+            text-align: center;
+        }
+
+        .slide-result h1 {
+            font-size: 96px;
+            color: #ff6b35;
+            margin-bottom: 40px;
+        }
+
+        .slide-result .congrats {
+            font-size: 72px;
+            color: #d32f2f;
+            font-weight: bold;
+            margin-bottom: 60px;
+        }
+
+        .slide-result .message {
+            font-size: 48px;
+            color: #333;
+            line-height: 1.8;
+            max-width: 1400px;
+        }
+
+        /* 印刷用スタイル */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .slide {
+                width: 100%;
+                height: 100vh;
+                margin: 0;
+                padding: 60px;
+                box-shadow: none;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+        }
+
+        /* 画面表示用のナビゲーション */
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-btn:hover {
+            background: #ff8c42;
+        }
+
+        @media print {
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- スライド1: タイトル -->
+    <div class="slide slide-title">
+        <h1>DX忘年会2025</h1>
+        <div class="subtitle">クロスビンゴ</div>
+    </div>
+
+    <!-- スライド2: ゲーム概要・ルール説明・QRコード -->
+    <div class="slide slide-overview">
+        <h1>ゲーム概要</h1>
+        <div class="content">
+            <div class="left">
+                <h2>🎮 ルール説明</h2>
+                <ul>
+                    <li>各マスに表示されたお題を達成した人を探しましょう。ただしご自身の所属の会社以外の方限定です。</li>
+                    <li>マスをタップして、達成した人の会社名と名前を入力すると、マスがオレンジ色に変わります</li>
+                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」と騒いでください</li>
+                </ul>
+                <div class="notice">
+                    <strong>⚠️ ご注意</strong><br>
+                    ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
+                </div>
+            </div>
+            <div class="right">
+                <div class="qr-container">
+                    <div class="qr-label">ゲームに参加する</div>
+                    <div id="qr-overview" class="qr-code"></div>
+                    <div class="game-url" id="url-overview"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド3: デモ -->
+    <div class="slide slide-demo">
+        <h1>デモ</h1>
+        <div class="demo-content">
+            <div class="demo-image">
+                📱 スマートフォンで<br>QRコードをスキャン
+            </div>
+            <div class="demo-steps">
+                <ol>
+                    <li>QRコードをスキャンしてゲームページにアクセス</li>
+                    <li>パスワードを入力してログイン</li>
+                    <li>3×3のビンゴカードが表示されます</li>
+                    <li>各マスに表示されたお題を達成した人を見つけて、マスをタップ</li>
+                    <li>会社名と名前を入力してOKボタンを押す</li>
+                    <li>マスがオレンジ色に変わります</li>
+                    <li>縦・横・斜めのいずれか1列が揃ったら「BINGO！」</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- スライド4: ゲーム進行中・QRコード -->
+    <div class="slide slide-playing">
+        <h1>ゲーム進行中</h1>
+        <div class="message">
+            各マスに表示されたお題を達成した人を探して、<br>
+            マスをタップして入力してください！
+        </div>
+        <div class="qr-section">
+            <div class="qr-label">まだ参加していない方はこちら</div>
+            <div id="qr-playing" class="qr-code"></div>
+            <div class="game-url" id="url-playing"></div>
+        </div>
+    </div>
+
+    <!-- スライド5: 結果 -->
+    <div class="slide slide-result">
+        <h1>結果発表</h1>
+        <div class="congrats">🎉 BINGO達成おめでとうございます！ 🎉</div>
+        <div class="message">
+            各マスの内容と書かれた人の名前を読み上げて、<br>
+            景品をお渡しします。
+        </div>
+    </div>
+
+    <!-- ナビゲーションボタン -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="window.print()">PDFとして保存</button>
+    </div>
+
+    <script>
+        // ゲームURL
+        const gameUrl = 'https://m-kubota-ad.github.io/bounenkai/game/';
+
+        // QRコードを生成
+        function generateQRCode(elementId, url, urlElementId) {
+            const canvas = document.createElement('canvas');
+            QRCode.toCanvas(canvas, url, {
+                width: 260,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('QRコード生成エラー:', error);
+                    return;
+                }
+                const container = document.getElementById(elementId);
+                if (container) {
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                }
+            });
+
+            // URLを表示
+            const urlElement = document.getElementById(urlElementId);
+            if (urlElement) {
+                urlElement.textContent = gameUrl;
+            }
+        }
+
+        // ページ読み込み後にQRコードを生成
+        window.addEventListener('DOMContentLoaded', function() {
+            generateQRCode('qr-overview', gameUrl, 'url-overview');
+            generateQRCode('qr-playing', gameUrl, 'url-playing');
+        });
+    </script>
+</body>
+</html>
+
