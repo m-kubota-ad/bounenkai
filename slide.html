@@ -245,7 +245,30 @@ p, li {
     display: inline-block; 
     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
-.game-url { margin-top: 15px; font-size: 14px; color: #64748b; font-family: monospace; }
+
+/* Password Display */
+.password-box {
+    margin-top: 30px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #38bdf8;
+    padding: 15px 30px;
+    border-radius: 50px;
+    display: inline-block;
+}
+.password-label {
+    font-size: 14px;
+    color: #cbd5e1;
+    display: block;
+    margin-bottom: 5px;
+    letter-spacing: 0.1em;
+}
+.password-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.1em;
+}
 
 /* Layout Centers */
 .center-layout { text-align: center; display: flex; flex-direction: column; justify-content: center; height: 100%; align-items: center; }
@@ -296,6 +319,8 @@ p, li {
     h2 { color: #000 !important; border-left: 5px solid #000; }
     h2::before { background: #000; }
     .step-num { color: #000; border-color: #000; }
+    .password-value { color: #000; }
+    .password-box { border-color: #000; background: none; }
     
     /* Backgrounds Removal */
     .full-bg-image { background-image: none !important; background-color: #fff !important; }
@@ -385,9 +410,13 @@ p, li {
                     <div style="text-align: center;">
                         <div class="qr-container-wrapper">
                             <div id="qr-join" class="qr-code"></div>
-                            <div class="game-url" id="url-join"></div>
                         </div>
-                        <p style="margin-top: 25px; font-size: 18px; color:#cbd5e1; letter-spacing: 0.1em;">SCAN TO JOIN</p>
+                        
+                        <!-- Password Display -->
+                        <div class="password-box">
+                            <span class="password-label">PASSWORD</span>
+                            <span class="password-value">gmv1000</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -421,9 +450,13 @@ p, li {
                     <div style="text-align: center;">
                         <div class="qr-container-wrapper" style="transform: scale(1.1); margin-bottom: 20px;">
                             <div id="qr-playing" class="qr-code"></div>
-                            <div class="game-url" id="url-playing"></div>
                         </div>
-                        <p style="margin-top: 30px; color: #e2e8f0; font-size: 18px; font-weight: 500;">途中参加はこちら</p>
+                        
+                        <!-- Password Display -->
+                        <div class="password-box">
+                            <span class="password-label">PASSWORD</span>
+                            <span class="password-value">gmv1000</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -443,6 +476,9 @@ p, li {
 
     <!-- Navigation Controls -->
     <div class="nav-controls">
+        <button class="nav-btn" onclick="copySourceCode()" title="ソースコードをコピー">
+            <i class="fa-solid fa-code"></i>
+        </button>
         <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" title="前へ">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
@@ -456,7 +492,7 @@ p, li {
     </div>
 
     <script>
-        const gameUrl = 'https://m-kubota-ad.github.io/bounenkai/game/';
+        const gameUrl = 'https://www.dot-st.com/static/docs/c/pages/251212_dx_party/game/index.html';
         
         let currentSlideIndex = 0;
         let slides;
@@ -517,10 +553,23 @@ p, li {
             }
         });
 
+        // --- COPY SOURCE CODE FUNCTION ---
+        async function copySourceCode() {
+            try {
+                // Get the current HTML
+                const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                await navigator.clipboard.writeText(htmlContent);
+                alert("HTMLコードをクリップボードにコピーしました！\n\nメモ帳などに貼り付けて「bingo.html」として保存してください。");
+            } catch (err) {
+                console.error('コピーに失敗しました:', err);
+                alert("コピーに失敗しました。\nコードブロックから手動でコピーしてください。");
+            }
+        }
+
         // --- QR CODE ---
-        function generateQRCode(elementId, url, urlElementId) {
+        function generateQRCode(elementId, url) {
             if (typeof QRCode === 'undefined') {
-                setTimeout(() => generateQRCode(elementId, url, urlElementId), 500);
+                setTimeout(() => generateQRCode(elementId, url), 500);
                 return;
             }
             const container = document.getElementById(elementId);
@@ -536,9 +585,6 @@ p, li {
                 if (error) console.error(error);
                 container.appendChild(canvas);
             });
-
-            const urlElement = document.getElementById(urlElementId);
-            if (urlElement) urlElement.textContent = url;
         }
 
         // --- INIT ---
@@ -550,8 +596,8 @@ p, li {
             resizeDeck();
             showSlide(0);
             
-            generateQRCode('qr-join', gameUrl, 'url-join');
-            generateQRCode('qr-playing', gameUrl, 'url-playing');
+            generateQRCode('qr-join', gameUrl);
+            generateQRCode('qr-playing', gameUrl);
         });
     </script>
 </body>
