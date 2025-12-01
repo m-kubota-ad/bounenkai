@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DX忘年会2025 クロスビンゴ - スライド</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="slides-data.js"></script>
     <style>
         * {
             margin: 0;
@@ -538,124 +539,8 @@
     </style>
 </head>
 <body>
-    <div class="slides-container">
-    <!-- スライド1: タイトル -->
-    <div class="slide slide-title active">
-        <h1>DX忘年会2025</h1>
-        <div class="subtitle">クロスビンゴ</div>
-    </div>
-
-    <!-- スライド2: ゲームの目的・楽しさ -->
-    <div class="slide slide-purpose">
-        <h1>🎯 このゲームの目的</h1>
-        <div class="purpose-content">
-            <div class="purpose-item">
-                <div class="purpose-icon">🤝</div>
-                <div class="purpose-text">
-                    <h2>異なる会社の方々と交流</h2>
-                    <p>ご自身の所属の会社以外の方と<br>自然に会話が生まれます</p>
-                </div>
-            </div>
-            <div class="purpose-item">
-                <div class="purpose-icon">🎲</div>
-                <div class="purpose-text">
-                    <h2>楽しく忘年会を盛り上げる</h2>
-                    <p>3×3のビンゴカードで<br>縦・横・斜めのいずれか1列を目指します</p>
-                </div>
-            </div>
-            <div class="purpose-item">
-                <div class="purpose-icon">🎁</div>
-                <div class="purpose-text">
-                    <h2>BINGO達成で景品獲得</h2>
-                    <p>最初にBINGOを達成した方に<br>素敵な景品をプレゼント！</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド3: ルール説明 -->
-    <div class="slide slide-rules">
-        <h1>🎮 ルール説明</h1>
-        <div class="rules-content">
-            <div class="rule-item">
-                <div class="rule-number">1</div>
-                <div class="rule-text">
-                    <h2>お題を達成した人を探す</h2>
-                    <p>各マスに表示されたお題を達成した人を見つけましょう<br><strong>※ご自身の所属の会社以外の方限定です</strong></p>
-                </div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-number">2</div>
-                <div class="rule-text">
-                    <h2>マスをタップして入力</h2>
-                    <p>達成した人の会社名と名前を入力すると、<br>マスがオレンジ色に変わります</p>
-                </div>
-            </div>
-            <div class="rule-item">
-                <div class="rule-number">3</div>
-                <div class="rule-text">
-                    <h2>BINGOを目指す</h2>
-                    <p>縦・横・斜めのいずれか1列が揃ったら<br><strong>「BINGO！」</strong>と大きな声で叫んでください</p>
-                </div>
-            </div>
-            <div class="notice">
-                <strong>⚠️ ご注意</strong><br>
-                ビンゴ当選後に各マスの内容と書かれた人の名前を読み上げて景品をわたすので、名前を書かれることの承認を本人から得てください。
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド4: 参加方法・QRコード -->
-    <div class="slide slide-join">
-        <h1>📱 ゲームに参加する</h1>
-        <div class="join-content">
-            <div class="join-steps">
-                <div class="join-step">
-                    <div class="step-number">1</div>
-                    <p>スマートフォンで<br>QRコードをスキャン</p>
-                </div>
-                <div class="join-arrow">→</div>
-                <div class="join-step">
-                    <div class="step-number">2</div>
-                    <p>パスワードを<br>入力してログイン</p>
-                </div>
-                <div class="join-arrow">→</div>
-                <div class="join-step">
-                    <div class="step-number">3</div>
-                    <p>3×3のビンゴカードが<br>表示されます</p>
-                </div>
-            </div>
-            <div class="qr-section">
-                <div class="qr-label">ゲームに参加する</div>
-                <div id="qr-join" class="qr-code"></div>
-                <div class="game-url" id="url-join"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- スライド5: ゲーム進行中・QRコード -->
-    <div class="slide slide-playing">
-        <h1>🎮 ゲーム進行中</h1>
-        <div class="message">
-            各マスに表示されたお題を達成した人を探して、<br>
-            マスをタップして入力してください！
-        </div>
-        <div class="qr-section">
-            <div class="qr-label">まだ参加していない方はこちら</div>
-            <div id="qr-playing" class="qr-code"></div>
-            <div class="game-url" id="url-playing"></div>
-        </div>
-    </div>
-
-    <!-- スライド6: 結果 -->
-    <div class="slide slide-result">
-        <h1>結果発表</h1>
-        <div class="congrats">🎉 BINGO達成おめでとうございます！ 🎉</div>
-        <div class="message">
-            各マスの内容と書かれた人の名前を読み上げて、<br>
-            景品をお渡しします。
-        </div>
-    </div>
+    <div class="slides-container" id="slidesContainer">
+        <!-- スライドはJavaScriptで動的に生成されます -->
     </div>
 
     <!-- スライドカウンター -->
@@ -671,13 +556,124 @@
     </div>
 
     <script>
-        // ゲームURL
-        const gameUrl = 'https://m-kubota-ad.github.io/bounenkai/game/';
+        // テキストの改行を<br>に変換するヘルパー関数
+        function nl2br(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+
+        // スライドを生成
+        function generateSlides() {
+            const container = document.getElementById('slidesContainer');
+            const data = SLIDES_DATA;
+
+            // スライド1: タイトル
+            container.innerHTML += `
+                <div class="slide slide-title active">
+                    <h1>${data.title.main}</h1>
+                    <div class="subtitle">${data.title.subtitle}</div>
+                </div>
+            `;
+
+            // スライド2: 目的
+            const purposeItems = data.purpose.items.map(item => `
+                <div class="purpose-item">
+                    <div class="purpose-icon">${item.icon}</div>
+                    <div class="purpose-text">
+                        <h2>${item.title}</h2>
+                        <p>${nl2br(item.description)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML += `
+                <div class="slide slide-purpose">
+                    <h1>${data.purpose.heading}</h1>
+                    <div class="purpose-content">
+                        ${purposeItems}
+                    </div>
+                </div>
+            `;
+
+            // スライド3: ルール
+            const ruleItems = data.rules.steps.map((step, index) => `
+                <div class="rule-item">
+                    <div class="rule-number">${index + 1}</div>
+                    <div class="rule-text">
+                        <h2>${step.title}</h2>
+                        <p>${nl2br(step.description)}${step.note ? '<br><strong>' + step.note + '</strong>' : ''}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML += `
+                <div class="slide slide-rules">
+                    <h1>${data.rules.heading}</h1>
+                    <div class="rules-content">
+                        ${ruleItems}
+                        <div class="notice">
+                            <strong>${data.rules.notice.icon} ${data.rules.notice.title}</strong><br>
+                            ${data.rules.notice.text}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // スライド4: 参加方法
+            const joinSteps = data.join.steps.map((step, index) => `
+                <div class="join-step">
+                    <div class="step-number">${index + 1}</div>
+                    <p>${nl2br(step)}</p>
+                </div>
+                ${index < data.join.steps.length - 1 ? '<div class="join-arrow">→</div>' : ''}
+            `).join('');
+
+            container.innerHTML += `
+                <div class="slide slide-join">
+                    <h1>${data.join.heading}</h1>
+                    <div class="join-content">
+                        <div class="join-steps">
+                            ${joinSteps}
+                        </div>
+                        <div class="qr-section">
+                            <div class="qr-label">${data.join.qrLabel}</div>
+                            <div id="qr-join" class="qr-code"></div>
+                            <div class="game-url" id="url-join"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // スライド5: 進行中
+            container.innerHTML += `
+                <div class="slide slide-playing">
+                    <h1>${data.playing.heading}</h1>
+                    <div class="message">
+                        ${nl2br(data.playing.message)}
+                    </div>
+                    <div class="qr-section">
+                        <div class="qr-label">${data.playing.qrLabel}</div>
+                        <div id="qr-playing" class="qr-code"></div>
+                        <div class="game-url" id="url-playing"></div>
+                    </div>
+                </div>
+            `;
+
+            // スライド6: 結果
+            container.innerHTML += `
+                <div class="slide slide-result">
+                    <h1>${data.result.heading}</h1>
+                    <div class="congrats">${data.result.congrats}</div>
+                    <div class="message">
+                        ${nl2br(data.result.message)}
+                    </div>
+                </div>
+            `;
+        }
 
         // スライド管理
         let currentSlideIndex = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
+        let slides;
+        let totalSlides;
 
         // スライドを表示
         function showSlide(index) {
@@ -757,20 +753,27 @@
             // URLを表示
             const urlElement = document.getElementById(urlElementId);
             if (urlElement) {
-                urlElement.textContent = gameUrl;
+                urlElement.textContent = SLIDES_DATA.config.gameUrl;
             }
         }
 
         // ページ読み込み後に初期化
         window.addEventListener('DOMContentLoaded', function() {
+            // スライドを生成
+            generateSlides();
+
+            // スライド要素を取得
+            slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+
             // 最初のスライドを表示
             showSlide(0);
             
             // QRコードを生成
+            const gameUrl = SLIDES_DATA.config.gameUrl;
             generateQRCode('qr-join', gameUrl, 'url-join');
             generateQRCode('qr-playing', gameUrl, 'url-playing');
         });
     </script>
 </body>
 </html>
-
