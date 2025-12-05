@@ -8,7 +8,7 @@
     const AUTH_CONFIG = {
         AUTH_KEY: 'bingo_authenticated',
         SALT: 'bingo_salt_2024_adastria',
-        PASSWORD_HASH: '374ab5b540c1f19273e06b6f828edf23cf6bae3b31184445cc518c22ea7478a5',
+        PASSWORD_HASH: 'c6b8caeeee25e3595aa47e6ffc5c7660d5cb33e788a572ed8aab161ec101af77',
         ERROR_DISPLAY_TIME: 3000
     };
 

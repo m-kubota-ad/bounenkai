@@ -390,13 +390,99 @@
             background-color: #7f8c8d;
         }
 
+        /* スマホ向けレスポンシブ対応 */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+
+            .header-actions h1 {
+                text-align: center;
+            }
+
+            .logout-btn {
+                align-self: flex-end;
+            }
+
+            .rules {
+                padding: 12px;
+                margin-bottom: 16px;
+            }
+
+            .rules h2 {
+                font-size: 1rem;
+            }
+
+            .rules ul {
+                font-size: 0.85rem;
+                padding-left: 16px;
+            }
+
+            .rules .notice {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+
+            .cell-content {
+                padding: 4px 3px;
+            }
+
+            .task {
+                font-size: 0.75rem;
+                line-height: 1.2;
+                padding: 2px 0;
+            }
+
+            .achieved-name {
+                font-size: 0.7rem;
+                line-height: 1.2;
+                bottom: 3px;
+                padding: 0 3px;
+            }
+
+            .input-placeholder {
+                font-size: 0.7rem;
+                bottom: 3px;
+            }
+
+            .bingo-card td {
+                border: 2px solid #f7f7f7;
+            }
+        }
+
+        /* より小さいスマホ向け */
+        @media (max-width: 360px) {
+            .task {
+                font-size: 0.65rem;
+                line-height: 1.15;
+            }
+
+            .achieved-name {
+                font-size: 0.6rem;
+            }
+
+            .input-placeholder {
+                font-size: 0.6rem;
+            }
+        }
+
     </style>
 </head>
 <body>
     <!-- ログイン画面 -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
-            <h2>DX忘年会2025 クロスビンゴ</h2>
+            <h2>DX忘年会2025</h2>
             <input type="password" id="passwordInput" class="login-input" placeholder="パスワードを入力" autofocus>
             <button class="login-btn" onclick="handleLogin()">ログイン</button>
             <div id="loginError" class="login-error">パスワードが正しくありません</div>
